@@ -14,7 +14,7 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const engineState = new EngineState(canvas.width, canvas.height);
 
-  const circle1 = new Circle({ radius: 25, mass: 10, x: 30, y: 30 });
+  const circle1 = new Circle({ radius: 25, mass: 10, x: 150, y: 90 });
   const circle2 = new Circle({ radius: 40, mass: 10, x: 500, y: 170 });
 
   engineState.addObject(circle1);
