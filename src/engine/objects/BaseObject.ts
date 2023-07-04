@@ -3,10 +3,8 @@ import { Vector } from "../Vector";
 export interface BaseObject {
   x: number;
   y: number;
-  vx: number;
-  vy: number;
-  ax: number;
-  ay: number;
+  v: Vector;
+  a: Vector;
   mass: number;
   forcesX: number[];
   forcesY: number[];
@@ -17,10 +15,8 @@ export interface BaseObject {
 export interface BaseObjectConstructorProps {
   x: number;
   y: number;
-  vx?: number;
-  vy?: number;
-  ax?: number;
-  ay?: number;
+  v?: Vector;
+  a?: Vector;
   mass: number;
   forcesX?: number[];
   forcesY?: number[];
@@ -30,20 +26,16 @@ export class BaseObject {
   constructor({
     x,
     y,
-    vx,
-    vy,
-    ax,
-    ay,
+    v,
+    a,
     mass,
     forcesX,
     forcesY,
   }: BaseObjectConstructorProps) {
     this.x = x;
     this.y = y;
-    this.vx = vx ?? 0;
-    this.vy = vy ?? 0;
-    this.ax = ax ?? 0;
-    this.ay = ay ?? 0;
+    this.v = v ?? new Vector(0, 0);
+    this.a = a ?? new Vector(0, 0);
     this.mass = mass;
     this.forcesX = forcesX ?? [];
     this.forcesY = forcesY ?? [];
@@ -55,14 +47,14 @@ export class BaseObject {
     ctx.strokeStyle = "yellow";
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
-    ctx.lineTo(this.x + this.ax, this.y + this.ay);
+    ctx.lineTo(this.x + this.a.x, this.y + this.a.y);
     ctx.stroke();
 
     // Velocity
     ctx.strokeStyle = "cyan";
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
-    ctx.lineTo(this.x + this.vx, this.y + this.vy);
+    ctx.lineTo(this.x + this.v.x, this.y + this.v.y);
     ctx.stroke();
   };
 
@@ -111,44 +103,35 @@ export class BaseObject {
     const netForceY = this.calculateNetForceY();
 
     if (netForceX) {
-      this.ax = netForceX / this.mass;
+      this.a.x = netForceX / this.mass;
     }
     if (netForceY) {
-      this.ay = netForceY / this.mass;
+      this.a.y = netForceY / this.mass;
     }
   };
 
   resetAccelerationX = () => {
-    this.ax = 0;
+    this.a.x = 0;
   };
 
   resetAccelerationY = () => {
-    this.ay = 0;
+    this.a.y = 0;
   };
 
   updateVelocity = (dt: number) => {
-    this.vx += this.ax * dt;
-    this.vy += this.ay * dt;
-    this.vx *= 1 - this.friction;
-    this.vy *= 1 - this.friction;
+    this.v = this.v.add(this.a.scale(dt)); // Accelerate
+    this.v = this.v.scale(1 - this.friction); // Friction
 
-    const absVx = Math.abs(this.vx);
-    const absVy = Math.abs(this.vy);
-    const normVx = this.vx / absVx;
-    const normVy = this.vy / absVy;
-
-    if (absVx !== 0) {
-      this.vx = normVx * Math.min(absVx, 200);
-    }
-    if (absVy !== 0) {
-      this.vy = normVy * Math.min(absVy, 200);
-    }
+    // Add velocity constraints
+    const vUnit = this.v.unit;
+    this.v.x = vUnit.x * Math.min(Math.abs(this.v.x), 150);
+    this.v.y = vUnit.y * Math.min(Math.abs(this.v.y), 150);
   };
 
   updateCoordinates = (dt: number) => {
     this.updateAcceleration();
     this.updateVelocity(dt);
-    this.x += this.vx * dt;
-    this.y += this.vy * dt;
+    this.x += this.v.x * dt;
+    this.y += this.v.y * dt;
   };
 }
