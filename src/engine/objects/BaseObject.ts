@@ -1,4 +1,4 @@
-import type { Vector } from "../types";
+import { Vector } from "../Vector";
 
 export interface BaseObject {
   x: number;
@@ -67,8 +67,8 @@ export class BaseObject {
   };
 
   addForce = (force: Vector) => {
-    this.forcesX.push(force[0]);
-    this.forcesY.push(force[1]);
+    this.forcesX.push(force.x);
+    this.forcesY.push(force.y);
   };
 
   addForceX = (forceX: number) => {
