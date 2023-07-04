@@ -32,19 +32,8 @@ export class BaseObject {
   }
 
   drawVectors = (ctx: CanvasRenderingContext2D) => {
-    // Acceleration
-    ctx.strokeStyle = "yellow";
-    ctx.beginPath();
-    ctx.moveTo(this.x, this.y);
-    ctx.lineTo(this.x + this.a.x, this.y + this.a.y);
-    ctx.stroke();
-
-    // Velocity
-    ctx.strokeStyle = "cyan";
-    ctx.beginPath();
-    ctx.moveTo(this.x, this.y);
-    ctx.lineTo(this.x + this.v.x, this.y + this.v.y);
-    ctx.stroke();
+    this.a.draw(ctx, this.x, this.y, { color: "yellow" });
+    this.v.draw(ctx, this.x, this.y, { color: "cyan" });
   };
 
   addForce = (force: Vector) => {
