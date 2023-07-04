@@ -118,12 +118,12 @@ export class BaseObject {
     }
   };
 
-  setAccelerationX = (ax: number) => {
-    this.ax = ax;
+  resetAccelerationX = () => {
+    this.ax = 0;
   };
 
-  setAccelerationY = (ay: number) => {
-    this.ay = ay;
+  resetAccelerationY = () => {
+    this.ay = 0;
   };
 
   updateVelocity = (dt: number) => {
@@ -131,6 +131,18 @@ export class BaseObject {
     this.vy += this.ay * dt;
     this.vx *= 1 - this.friction;
     this.vy *= 1 - this.friction;
+
+    const absVx = Math.abs(this.vx);
+    const absVy = Math.abs(this.vy);
+    const normVx = this.vx / absVx;
+    const normVy = this.vy / absVy;
+
+    if (absVx !== 0) {
+      this.vx = normVx * Math.min(absVx, 200);
+    }
+    if (absVy !== 0) {
+      this.vy = normVy * Math.min(absVy, 200);
+    }
   };
 
   updateCoordinates = (dt: number) => {

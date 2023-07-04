@@ -120,40 +120,12 @@ export const attachController = (keys: DirectionKeys, object: BaseObject) => {
   if (keys.left.isPressed) {
     object.addForceX(-100);
   }
-  // if (keys.up.isPressed) {
-  //   object.setAccelerationY(-200);
-  // }
-  // if (keys.right.isPressed) {
-  //   object.setAccelerationX(200);
-  // }
-  // if (keys.down.isPressed) {
-  //   object.setAccelerationY(200);
-  // }
-  // if (keys.left.isPressed) {
-  //   object.setAccelerationX(-200);
-  // }
-  // if (keys.up.isPressed && keys.right.isPressed) {
-  //   object.setAccelerationX(200 / Math.sqrt(2));
-  //   object.setAccelerationY(-200 / Math.sqrt(2));
-  // }
-  // if (keys.up.isPressed && keys.left.isPressed) {
-  //   object.setAccelerationX(-200 / Math.sqrt(2));
-  //   object.setAccelerationY(-200 / Math.sqrt(2));
-  // }
-  // if (keys.down.isPressed && keys.right.isPressed) {
-  //   object.setAccelerationX(200 / Math.sqrt(2));
-  //   object.setAccelerationY(200 / Math.sqrt(2));
-  // }
-  // if (keys.down.isPressed && keys.left.isPressed) {
-  //   object.setAccelerationX(-200 / Math.sqrt(2));
-  //   object.setAccelerationY(200 / Math.sqrt(2));
-  // }
   if (!keys.up.isPressed && !keys.down.isPressed) {
     object.resetAllForcesY();
-    object.setAccelerationY(0);
+    object.resetAccelerationY();
   }
   if (!keys.left.isPressed && !keys.right.isPressed) {
     object.resetAllForcesX();
-    object.setAccelerationX(0);
+    object.resetAccelerationX();
   }
 };
