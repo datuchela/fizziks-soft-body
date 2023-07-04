@@ -36,6 +36,7 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     // FPS
     fps = Math.round(1 / elapsedSeconds);
+    fps = Math.min(fps, 59); // Avoid flickering
     ctx.font = "25px Arial";
     ctx.fillStyle = "white";
     //
