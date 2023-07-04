@@ -1,3 +1,4 @@
+import { Vector } from "./Vector";
 import { BaseObject } from "./objects/BaseObject";
 
 export enum KeyCode {
@@ -109,23 +110,21 @@ export const attachControllerKeysUpListener = (arrowKeys: DirectionKeys) => {
 
 export const attachController = (keys: DirectionKeys, object: BaseObject) => {
   if (keys.up.isPressed) {
-    object.addForceY(-100);
+    object.addForce(new Vector(0, -100));
   }
   if (keys.right.isPressed) {
-    object.addForceX(100);
+    object.addForce(new Vector(100, 0));
   }
   if (keys.down.isPressed) {
-    object.addForceY(100);
+    object.addForce(new Vector(0, 100));
   }
   if (keys.left.isPressed) {
-    object.addForceX(-100);
+    object.addForce(new Vector(-100, 0));
   }
   if (!keys.up.isPressed && !keys.down.isPressed) {
     object.resetAllForcesY();
-    object.resetAccelerationY();
   }
   if (!keys.left.isPressed && !keys.right.isPressed) {
     object.resetAllForcesX();
-    object.resetAccelerationX();
   }
 };

@@ -6,8 +6,7 @@ export interface BaseObject {
   v: Vector;
   a: Vector;
   mass: number;
-  forcesX: number[];
-  forcesY: number[];
+  forces: Vector[];
   friction: number;
   draw: (ctx: CanvasRenderingContext2D) => void;
 }
@@ -18,27 +17,17 @@ export interface BaseObjectConstructorProps {
   v?: Vector;
   a?: Vector;
   mass: number;
-  forcesX?: number[];
-  forcesY?: number[];
+  forces?: Vector[];
 }
 
 export class BaseObject {
-  constructor({
-    x,
-    y,
-    v,
-    a,
-    mass,
-    forcesX,
-    forcesY,
-  }: BaseObjectConstructorProps) {
+  constructor({ x, y, v, a, mass, forces }: BaseObjectConstructorProps) {
     this.x = x;
     this.y = y;
     this.v = v ?? new Vector(0, 0);
     this.a = a ?? new Vector(0, 0);
     this.mass = mass;
-    this.forcesX = forcesX ?? [];
-    this.forcesY = forcesY ?? [];
+    this.forces = forces ?? [];
     this.friction = 0.01;
   }
 
@@ -59,63 +48,36 @@ export class BaseObject {
   };
 
   addForce = (force: Vector) => {
-    this.forcesX.push(force.x);
-    this.forcesY.push(force.y);
-  };
-
-  addForceX = (forceX: number) => {
-    this.forcesX.push(forceX);
-  };
-
-  addForceY = (forceY: number) => {
-    this.forcesY.push(forceY);
+    this.forces.push(force);
   };
 
   resetAllForcesX = () => {
-    this.forcesX = [];
+    this.forces.forEach((force) => {
+      force.x = 0;
+    });
   };
 
   resetAllForcesY = () => {
-    this.forcesY = [];
+    this.forces.forEach((force) => {
+      force.y = 0;
+    });
   };
 
   resetAllForces = () => {
-    this.resetAllForcesX();
-    this.resetAllForcesY();
+    this.forces = [];
   };
 
-  calculateNetForceX = (): number | undefined => {
-    if (this.forcesX.length < 1) return;
-    const netForceX = this.forcesX.reduce((acc, curr) => acc + curr);
-    this.forcesX = [netForceX];
-    return netForceX;
-  };
-
-  calculateNetForceY = (): number | undefined => {
-    if (this.forcesY.length < 1) return;
-    const netForceY = this.forcesY.reduce((acc, curr) => acc + curr);
-    this.forcesY = [netForceY];
-    return netForceY;
+  calculateNetForce = () => {
+    if (this.forces.length < 1) return;
+    return this.forces.reduce((acc, curr) => acc.add(curr));
   };
 
   updateAcceleration = () => {
-    const netForceX = this.calculateNetForceX();
-    const netForceY = this.calculateNetForceY();
+    const netForce = this.calculateNetForce();
+    if (!netForce) return;
 
-    if (netForceX) {
-      this.a.x = netForceX / this.mass;
-    }
-    if (netForceY) {
-      this.a.y = netForceY / this.mass;
-    }
-  };
-
-  resetAccelerationX = () => {
-    this.a.x = 0;
-  };
-
-  resetAccelerationY = () => {
-    this.a.y = 0;
+    this.a.x = netForce.x / this.mass;
+    this.a.y = netForce.y / this.mass;
   };
 
   updateVelocity = (dt: number) => {
