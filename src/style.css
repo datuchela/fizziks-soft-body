@@ -26,6 +26,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
+  flex-direction: column;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -94,6 +95,11 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+
+  .yellow-text,
+  .cyan-text {
+    background-color: #242424;
+  }
 }
 
 body {
@@ -103,5 +109,14 @@ body {
 }
 
 #physics-canvas {
+  background-color: #242424;
   border: 1px solid rgb(128, 128, 128);
+}
+
+.yellow-text {
+  color: yellow;
+}
+
+.cyan-text {
+  color: cyan;
 }
