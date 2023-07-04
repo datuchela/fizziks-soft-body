@@ -20,15 +20,8 @@ export class Vector {
   }
 
   get unit() {
-    let unitX = 0;
-    let unitY = 0;
-    if (this.x !== 0) {
-      unitX = this.x / Math.abs(this.x);
-    }
-    if (this.y !== 0) {
-      unitY = this.y / Math.abs(this.y);
-    }
-    return new Vector(unitX, unitY);
+    if (this.length === 0) return new Vector(0, 0);
+    return new Vector(this.x / this.length, this.y / this.length);
   }
 
   set unit(vector: Vector) {
