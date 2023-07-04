@@ -48,4 +48,17 @@ export class Vector {
   scale = (scalar: number) => {
     return new Vector(this.x * scalar, this.y * scalar);
   };
+
+  draw = (
+    ctx: CanvasRenderingContext2D,
+    startX: number,
+    startY: number,
+    options?: { color: string }
+  ) => {
+    ctx.strokeStyle = options?.color ?? "red";
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(startX + this.x, startY + this.y);
+    ctx.stroke();
+  };
 }
