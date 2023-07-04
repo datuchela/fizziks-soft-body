@@ -19,6 +19,24 @@ export class Vector {
     );
   }
 
+  get unit() {
+    let unitX = 0;
+    let unitY = 0;
+    if (this.x !== 0) {
+      unitX = this.x / Math.abs(this.x);
+    }
+    if (this.y !== 0) {
+      unitY = this.y / Math.abs(this.y);
+    }
+    return new Vector(unitX, unitY);
+  }
+
+  set unit(vector: Vector) {
+    throw new Error(
+      `Tried to set ${vector} as a unit vector, you cannot set unit vector explicitly.`
+    );
+  }
+
   add = (vector: Vector) => {
     return new Vector(this.x + vector.x, this.y + vector.y);
   };
@@ -27,8 +45,7 @@ export class Vector {
     return new Vector(this.x - vector.x, this.y - vector.y);
   };
 
-  scale = (n: number) => {
-    // ???
-    return new Vector(this.x * n, this.y * n);
+  scale = (scalar: number) => {
+    return new Vector(this.x * scalar, this.y * scalar);
   };
 }
