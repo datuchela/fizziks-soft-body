@@ -1,8 +1,7 @@
 import { Vector } from "../Vector";
 
 export interface BaseObject {
-  x: number;
-  y: number;
+  position: Vector;
   v: Vector;
   a: Vector;
   mass: number;
@@ -18,22 +17,30 @@ export interface BaseObjectConstructorProps {
   a?: Vector;
   mass: number;
   forces?: Vector[];
+  friction?: number;
 }
 
 export class BaseObject {
-  constructor({ x, y, v, a, mass, forces }: BaseObjectConstructorProps) {
-    this.x = x;
-    this.y = y;
+  constructor({
+    x,
+    y,
+    v,
+    a,
+    mass,
+    forces,
+    friction,
+  }: BaseObjectConstructorProps) {
+    this.position = new Vector(x, y);
     this.v = v ?? new Vector(0, 0);
     this.a = a ?? new Vector(0, 0);
     this.mass = mass;
     this.forces = forces ?? [];
-    this.friction = 0.01;
+    this.friction = friction ?? 0;
   }
 
   drawVectors = (ctx: CanvasRenderingContext2D) => {
-    this.a.draw(ctx, this.x, this.y, { color: "yellow" });
-    this.v.draw(ctx, this.x, this.y, { color: "cyan" });
+    this.a.draw(ctx, this.position.x, this.position.y, { color: "yellow" });
+    this.v.draw(ctx, this.position.x, this.position.y, { color: "cyan" });
   };
 
   addForce = (force: Vector) => {
@@ -79,9 +86,6 @@ export class BaseObject {
   };
 
   updateCoordinates = (dt: number) => {
-    this.updateAcceleration();
-    this.updateVelocity(dt);
-    this.x += this.v.x * dt;
-    this.y += this.v.y * dt;
+    this.position = this.position.add(this.v.scale(dt));
   };
 }

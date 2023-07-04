@@ -17,7 +17,7 @@ export class Circle extends BaseObject {
   draw = (ctx: CanvasRenderingContext2D) => {
     ctx.strokeStyle = "white";
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+    ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
     ctx.stroke();
   };
 }
