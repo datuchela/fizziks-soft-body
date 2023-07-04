@@ -38,6 +38,7 @@ export class EngineState {
   drawObjects = (ctx: CanvasRenderingContext2D) => {
     this.objects.forEach((obj) => {
       obj.draw(ctx);
+      obj.drawVectors(ctx);
     });
   };
 }
