@@ -27,16 +27,16 @@ export const init = (canvas: HTMLCanvasElement) => {
   attachControllerKeysUpListener(wasdKeys);
 
   let oldTimeStamp = 0;
-  let elapsedSeconds;
+  let dt;
   let fps;
 
   const mainLoop = (timeStamp: number) => {
-    elapsedSeconds = (timeStamp - oldTimeStamp) / 1000;
+    dt = (timeStamp - oldTimeStamp) / 500;
     oldTimeStamp = timeStamp;
 
     // FPS
-    fps = Math.round(1 / elapsedSeconds);
-    fps = Math.min(fps, 59); // Avoid flickering
+    fps = Math.round(1 / dt);
+    fps = Math.min(fps, 29); // Avoid flickering
     ctx.font = "25px Arial";
     ctx.fillStyle = "white";
     //
@@ -48,7 +48,7 @@ export const init = (canvas: HTMLCanvasElement) => {
     attachController(arrowKeys, circle1);
     attachController(wasdKeys, circle2);
 
-    engineState.updateObjects(elapsedSeconds);
+    engineState.updateObjects(dt);
     engineState.drawObjects(ctx);
 
     requestAnimationFrame(mainLoop);
