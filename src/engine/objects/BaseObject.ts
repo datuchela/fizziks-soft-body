@@ -75,7 +75,7 @@ export class BaseObject {
 
     // Add velocity constraints
     const vUnit = this.v.unit;
-    this.v = vUnit.scale(Math.min(this.v.length, 150));
+    this.v = vUnit.scale(Math.min(this.v.length, 250));
   };
 
   updateCoordinates = (dt: number) => {
