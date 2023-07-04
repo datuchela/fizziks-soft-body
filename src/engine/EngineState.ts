@@ -1,4 +1,3 @@
-import { Vector } from "./Vector";
 import { BaseObject } from "./objects/BaseObject";
 
 enum EngineStateValue {
