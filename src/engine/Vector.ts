@@ -9,16 +9,6 @@ export class Vector {
     this.y = y;
   }
 
-  add = (vector: Vector) => {
-    this.x += vector.x;
-    this.y += vector.y;
-  };
-
-  subtract = (vector: Vector) => {
-    this.x -= vector.x;
-    this.y -= vector.y;
-  };
-
   get length() {
     return Math.sqrt(this.x ** 2 + this.y ** 2);
   }
@@ -28,4 +18,17 @@ export class Vector {
       `Tried to set ${len} as vector length, you cannot set vector length explicitly.`
     );
   }
+
+  add = (vector: Vector) => {
+    return new Vector(this.x + vector.x, this.y + vector.y);
+  };
+
+  subtract = (vector: Vector) => {
+    return new Vector(this.x - vector.x, this.y - vector.y);
+  };
+
+  scale = (n: number) => {
+    // ???
+    return new Vector(this.x * n, this.y * n);
+  };
 }
