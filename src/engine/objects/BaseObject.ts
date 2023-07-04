@@ -52,14 +52,14 @@ export class BaseObject {
 
   drawVectors = (ctx: CanvasRenderingContext2D) => {
     // Acceleration
-    ctx.strokeStyle = "red";
+    ctx.strokeStyle = "yellow";
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
     ctx.lineTo(this.x + this.ax, this.y + this.ay);
     ctx.stroke();
 
     // Velocity
-    ctx.strokeStyle = "blue";
+    ctx.strokeStyle = "cyan";
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
     ctx.lineTo(this.x + this.vx, this.y + this.vy);
