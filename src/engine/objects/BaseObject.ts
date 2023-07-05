@@ -65,7 +65,7 @@ export class BaseObject {
 
   calculateNetForce = () => {
     if (this.forces.length < 1) return;
-    return this.forces.reduce((acc, curr) => acc.add(curr));
+    return this.forces.reduce((acc, curr) => Vector.add(acc, curr));
   };
 
   updateAcceleration = () => {
@@ -77,15 +77,17 @@ export class BaseObject {
   };
 
   updateVelocity = (dt: number) => {
-    this.v = this.v.add(this.a.scale(dt)); // Accelerate
-    this.v = this.v.scale(1 - this.friction); // Friction
+    const dv = Vector.scale(this.a, dt);
+    this.v = Vector.add(this.v, dv); // Accelerate
+    this.v = Vector.scale(this.v, 1 - this.friction); // Friction
 
     // Add velocity constraints
     const vUnit = this.v.unit;
-    this.v = vUnit.scale(Math.min(this.v.length, 250));
+    this.v = Vector.scale(vUnit, Math.min(this.v.length, 250));
   };
 
   updateCoordinates = (dt: number) => {
-    this.position = this.position.add(this.v.scale(dt));
+    const dp = Vector.scale(this.v, dt);
+    this.position = Vector.add(this.position, dp);
   };
 }

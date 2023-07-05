@@ -47,16 +47,16 @@ export class Vector {
     return v1.x * v2.x + v1.y * v2.y;
   };
 
-  add = (vector: Vector) => {
-    return new Vector(this.x + vector.x, this.y + vector.y);
+  static add = (vector1: Vector, vector2: Vector) => {
+    return new Vector(vector1.x + vector2.x, vector1.y + vector2.y);
   };
 
-  subtract = (vector: Vector) => {
-    return new Vector(this.x - vector.x, this.y - vector.y);
+  static subtract = (vector1: Vector, vector2: Vector) => {
+    return new Vector(vector1.x - vector2.x, vector1.y - vector2.y);
   };
 
-  scale = (scalar: number) => {
-    return new Vector(this.x * scalar, this.y * scalar);
+  static scale = (vector: Vector, scalar: number) => {
+    return new Vector(vector.x * scalar, vector.y * scalar);
   };
 
   draw = (
