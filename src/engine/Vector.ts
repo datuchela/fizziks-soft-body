@@ -1,12 +1,25 @@
-export interface Vector {
-  x: number;
-  y: number;
-}
+export interface Vector {}
 
 export class Vector {
+  private vector: [number, number];
   constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
+    this.vector = [x, y];
+  }
+
+  get x() {
+    return this.vector[0];
+  }
+
+  get y() {
+    return this.vector[1];
+  }
+
+  set x(newX: number) {
+    this.vector[0] = newX;
+  }
+
+  set y(newY: number) {
+    this.vector[1] = newY;
   }
 
   get length() {
