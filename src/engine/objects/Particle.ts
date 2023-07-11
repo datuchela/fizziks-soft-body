@@ -1,6 +1,7 @@
 import { Vector } from "../Vector";
 
 export interface Particle {
+  name: string;
   p: Vector;
   v: Vector;
   f: Vector;
@@ -9,6 +10,7 @@ export interface Particle {
 }
 
 export interface ParticleConstructorProps {
+  name: string;
   mass: number;
   radius?: number;
   x: number;
@@ -18,7 +20,8 @@ export interface ParticleConstructorProps {
 }
 
 export class Particle {
-  constructor({ x, y, v, f, mass, radius }: ParticleConstructorProps) {
+  constructor({ name, x, y, v, f, mass, radius }: ParticleConstructorProps) {
+    this.name = name;
     this.radius = radius ?? 8;
     this.mass = mass;
     this.p = new Vector(x, y);
@@ -35,9 +38,18 @@ export class Particle {
   }
 
   draw = (ctx: CanvasRenderingContext2D) => {
+    ctx.fillStyle = "white";
+    ctx.font = "12px Arial";
+    ctx.fillText(this.name, this.x, this.y - 20);
+
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "yellow";
     ctx.fill();
+  };
+
+  update = (dt: number) => {
+    this.v = Vector.add(this.v, Vector.scale(this.f, dt / this.mass));
+    this.p = Vector.add(this.p, Vector.scale(this.v, dt));
   };
 }
