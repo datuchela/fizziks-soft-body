@@ -1,4 +1,4 @@
-import { Vector } from "./Vector";
+import { EngineState } from "./EngineState";
 import {
   MouseState,
   attachMouseDownListener,
@@ -6,17 +6,20 @@ import {
   attachMouseUpListener,
 } from "./controllers";
 import { Particle } from "./objects/Particle";
+import { SoftBodyObject } from "./objects/SoftBodyObject";
 import { Spring } from "./objects/Spring";
 
 export const init = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const engineState = new EngineState(canvas.width, canvas.height);
+
   const particles = [
-    new Particle({ name: "p1", x: 100, y: 200, mass: 20 }),
-    new Particle({ name: "p2", x: 250, y: 200, mass: 20 }),
-    new Particle({ name: "p3", x: 100, y: 250, mass: 20 }),
-    new Particle({ name: "p4", x: 250, y: 250, mass: 20 }),
+    new Particle({ x: 100, y: 200, mass: 20 }),
+    new Particle({ x: 120, y: 200, mass: 20 }),
+    new Particle({ x: 100, y: 220, mass: 20 }),
+    new Particle({ x: 120, y: 220, mass: 20 }),
   ];
 
   const springs = [
@@ -27,6 +30,8 @@ export const init = (canvas: HTMLCanvasElement) => {
     new Spring({ particles: [particles[0], particles[3]], stiffness: 1 }),
     new Spring({ particles: [particles[1], particles[2]], stiffness: 1 }),
   ];
+
+  engineState.addObject(new SoftBodyObject({ springs }));
 
   const mouseState: MouseState = {
     isMouseDown: false,
@@ -41,7 +46,7 @@ export const init = (canvas: HTMLCanvasElement) => {
   let fps;
 
   const mainLoop = (timeStamp: number) => {
-    dt = (timeStamp - oldTimeStamp) / 100;
+    dt = (timeStamp - oldTimeStamp) / 200;
     oldTimeStamp = timeStamp;
 
     // FPS
@@ -54,26 +59,11 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     ctx.fillText("FPS: " + fps, 10, 30);
 
-    // Reset Forces
-    particles.forEach((particle) => {
-      particle.f = new Vector(0, 0);
-    });
+    engineState.resetForces();
 
-    // Update
-    springs.forEach((spring) => {
-      spring.update();
-    });
-    particles.forEach((particle) => {
-      particle.update(dt);
-    });
+    engineState.updateObjects(dt);
 
-    // Draw
-    springs.forEach((spring) => {
-      spring.draw(ctx);
-    });
-    particles.forEach((particle) => {
-      particle.draw(ctx);
-    });
+    engineState.drawObjects(ctx);
 
     requestAnimationFrame(mainLoop);
   };

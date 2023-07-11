@@ -1,5 +1,4 @@
 import { Vector } from "./Vector";
-import { BaseObject } from "./objects/BaseObject";
 import { Particle } from "./objects/Particle";
 
 export enum KeyCode {
@@ -107,27 +106,6 @@ export const attachControllerKeysUpListener = (arrowKeys: DirectionKeys) => {
         break;
     }
   });
-};
-
-export const attachController = (keys: DirectionKeys, object: BaseObject) => {
-  if (keys.up.isPressed) {
-    object.addForce(new Vector(0, -100));
-  }
-  if (keys.right.isPressed) {
-    object.addForce(new Vector(100, 0));
-  }
-  if (keys.down.isPressed) {
-    object.addForce(new Vector(0, 100));
-  }
-  if (keys.left.isPressed) {
-    object.addForce(new Vector(-100, 0));
-  }
-  if (!keys.up.isPressed && !keys.down.isPressed) {
-    object.resetAllForcesY();
-  }
-  if (!keys.left.isPressed && !keys.right.isPressed) {
-    object.resetAllForcesX();
-  }
 };
 
 export type MouseState = {

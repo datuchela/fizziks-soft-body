@@ -28,8 +28,12 @@ export class Spring {
       restLength ??
       Vector.subtract(this.particles[0].p, this.particles[1].p).length;
     this.stiffness = stiffness ?? 0.5;
-    this.dampening = dampening ?? 0.5;
+    this.dampening = dampening ?? 0.7;
   }
+
+  static attach = (particle1: Particle, particle2: Particle) => {
+    return new Spring({ particles: [particle1, particle2] });
+  };
 
   draw = (ctx: CanvasRenderingContext2D) => {
     ctx.beginPath();
