@@ -1,5 +1,6 @@
 import { Vector } from "./Vector";
 import { BaseObject } from "./objects/BaseObject";
+import { Particle } from "./objects/Particle";
 
 export enum KeyCode {
   ArrowUp = "ArrowUp",
@@ -127,4 +128,65 @@ export const attachController = (keys: DirectionKeys, object: BaseObject) => {
   if (!keys.left.isPressed && !keys.right.isPressed) {
     object.resetAllForcesX();
   }
+};
+
+export type MouseState = {
+  isMouseDown: boolean;
+};
+
+export const attachMouseDownListener = (
+  canvas: HTMLCanvasElement,
+  mouseState: MouseState
+) => {
+  canvas.addEventListener("mousedown", () => {
+    mouseState.isMouseDown = true;
+  });
+};
+
+export const attachMouseUpListener = (mouseState: MouseState) => {
+  window.addEventListener("mouseup", () => {
+    mouseState.isMouseDown = false;
+  });
+};
+
+export const attachMouseMoveListener = (
+  canvas: HTMLCanvasElement,
+  mouseState: MouseState,
+  particles: Particle[]
+) => {
+  canvas.addEventListener("mousemove", (e) => {
+    if (!mouseState.isMouseDown) return;
+
+    const rect = canvas.getBoundingClientRect();
+
+    const mousePosition = new Vector(
+      e.clientX - rect.left,
+      e.clientY - rect.top
+    );
+
+    let closestParticle: Particle = particles[0];
+    let closestParticleDistance: number = Vector.subtract(
+      mousePosition,
+      particles[0].p
+    ).length;
+
+    for (let i = 1; i < particles.length; ++i) {
+      const currDistance = Vector.subtract(
+        mousePosition,
+        particles[i].p
+      ).length;
+      if (currDistance < closestParticleDistance) {
+        closestParticle = particles[i];
+        closestParticleDistance = currDistance;
+      }
+    }
+
+    // Restrict grabbing out of range
+    // if (closestParticleDistance > 25) return;
+
+    closestParticle.f = new Vector(0, 0);
+    closestParticle.v = new Vector(0, 0);
+
+    closestParticle.p = mousePosition;
+  });
 };

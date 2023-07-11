@@ -1,54 +1,51 @@
-import { EngineState } from "./EngineState";
+import { Vector } from "./Vector";
 import {
-  arrowKeys,
-  attachController,
-  attachControllerKeysDownListener,
-  attachControllerKeysUpListener,
-  wasdKeys,
+  MouseState,
+  attachMouseDownListener,
+  attachMouseMoveListener,
+  attachMouseUpListener,
 } from "./controllers";
-import { Circle } from "./objects/Circle";
+import { Particle } from "./objects/Particle";
+import { Spring } from "./objects/Spring";
 
 export const init = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  const engineState = new EngineState(canvas.width, canvas.height);
+  const particles = [
+    new Particle({ name: "p1", x: 100, y: 200, mass: 20 }),
+    new Particle({ name: "p2", x: 250, y: 200, mass: 20 }),
+    new Particle({ name: "p3", x: 100, y: 250, mass: 20 }),
+    new Particle({ name: "p4", x: 250, y: 250, mass: 20 }),
+  ];
 
-  const circle1 = new Circle({
-    radius: 25,
-    mass: 5,
-    x: 150,
-    y: 90,
-    friction: 0.1,
-  });
-  const circle2 = new Circle({
-    radius: 40,
-    mass: 30,
-    x: 500,
-    y: 170,
-    friction: 0.01,
-  });
+  const springs = [
+    new Spring({ particles: [particles[0], particles[1]], stiffness: 1 }),
+    new Spring({ particles: [particles[2], particles[3]], stiffness: 1 }),
+    new Spring({ particles: [particles[0], particles[2]], stiffness: 1 }),
+    new Spring({ particles: [particles[1], particles[3]], stiffness: 1 }),
+    new Spring({ particles: [particles[0], particles[3]], stiffness: 1 }),
+    new Spring({ particles: [particles[1], particles[2]], stiffness: 1 }),
+  ];
 
-  engineState.addObject(circle1);
-  engineState.addObject(circle2);
+  const mouseState: MouseState = {
+    isMouseDown: false,
+  };
 
-  attachControllerKeysDownListener(arrowKeys);
-  attachControllerKeysUpListener(arrowKeys);
-
-  attachControllerKeysDownListener(wasdKeys);
-  attachControllerKeysUpListener(wasdKeys);
+  attachMouseDownListener(canvas, mouseState);
+  attachMouseUpListener(mouseState);
+  attachMouseMoveListener(canvas, mouseState, particles);
 
   let oldTimeStamp = 0;
-  let dt;
+  let dt: number;
   let fps;
 
   const mainLoop = (timeStamp: number) => {
-    dt = (timeStamp - oldTimeStamp) / 500;
+    dt = (timeStamp - oldTimeStamp) / 100;
     oldTimeStamp = timeStamp;
 
     // FPS
     fps = Math.round(1 / dt);
-    fps = Math.min(fps, 29); // Avoid flickering
     ctx.font = "25px Arial";
     ctx.fillStyle = "white";
     //
@@ -57,11 +54,26 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     ctx.fillText("FPS: " + fps, 10, 30);
 
-    attachController(arrowKeys, circle1);
-    attachController(wasdKeys, circle2);
+    // Reset Forces
+    particles.forEach((particle) => {
+      particle.f = new Vector(0, 0);
+    });
 
-    engineState.updateObjects(dt);
-    engineState.drawObjects(ctx);
+    // Update
+    springs.forEach((spring) => {
+      spring.update();
+    });
+    particles.forEach((particle) => {
+      particle.update(dt);
+    });
+
+    // Draw
+    springs.forEach((spring) => {
+      spring.draw(ctx);
+    });
+    particles.forEach((particle) => {
+      particle.draw(ctx);
+    });
 
     requestAnimationFrame(mainLoop);
   };
