@@ -53,7 +53,7 @@ export const init = (canvas: HTMLCanvasElement) => {
   let fps;
 
   const mainLoop = (timeStamp: number) => {
-    dt = (timeStamp - oldTimeStamp) / 200;
+    dt = (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
 
     // FPS
