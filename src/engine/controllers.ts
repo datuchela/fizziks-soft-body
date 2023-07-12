@@ -164,12 +164,18 @@ export const attachMouseMoveListener = (
 
     const rect = canvas.getBoundingClientRect();
 
-    // Restrict grabbing out of range
-    // if (closestParticleDistance > 25) return;
-
     mouseState.position = new Vector(
       e.clientX - rect.left,
       e.clientY - rect.top
     );
   });
+};
+
+export const handleMouseControls = (mouseState: MouseState) => {
+  if (mouseState.isMouseDown && mouseState.closestParticle) {
+    // Prevent mouse-controlled particle from slipping away
+    mouseState.closestParticle.v = new Vector(0, 0);
+
+    mouseState.closestParticle.p = mouseState.position;
+  }
 };

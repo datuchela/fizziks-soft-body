@@ -5,6 +5,7 @@ import {
   attachMouseDownListener,
   attachMouseMoveListener,
   attachMouseUpListener,
+  handleMouseControls,
 } from "./controllers";
 import { Particle } from "./objects/Particle";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
@@ -64,11 +65,7 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     ctx.fillText("FPS: " + fps, 10, 30);
 
-    // Prevent mouse-controlled particle from slipping away
-    if (mouseState.isMouseDown && mouseState.closestParticle) {
-      mouseState.closestParticle.v = new Vector(0, 0);
-      mouseState.closestParticle.p = mouseState.position;
-    }
+    handleMouseControls(mouseState);
 
     engineState.resetForces();
 
