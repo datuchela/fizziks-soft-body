@@ -7,7 +7,6 @@ import {
 } from "./controllers";
 import { Particle } from "./objects/Particle";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
-import { Spring } from "./objects/Spring";
 
 export const init = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext("2d");
@@ -17,21 +16,23 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const particles = [
     new Particle({ x: 100, y: 200, mass: 20 }),
-    new Particle({ x: 120, y: 200, mass: 20 }),
-    new Particle({ x: 100, y: 220, mass: 20 }),
-    new Particle({ x: 120, y: 220, mass: 20 }),
+    new Particle({ x: 140, y: 200, mass: 20 }),
+    new Particle({ x: 100, y: 240, mass: 20 }),
+    new Particle({ x: 140, y: 240, mass: 20 }),
+    new Particle({ x: 100, y: 280, mass: 20 }),
+    new Particle({ x: 140, y: 280, mass: 20 }),
+    new Particle({ x: 180, y: 200, mass: 20 }),
+    new Particle({ x: 180, y: 240, mass: 20 }),
+    new Particle({ x: 180, y: 280, mass: 20 }),
   ];
 
-  const springs = [
-    new Spring({ particles: [particles[0], particles[1]], stiffness: 1 }),
-    new Spring({ particles: [particles[2], particles[3]], stiffness: 1 }),
-    new Spring({ particles: [particles[0], particles[2]], stiffness: 1 }),
-    new Spring({ particles: [particles[1], particles[3]], stiffness: 1 }),
-    new Spring({ particles: [particles[0], particles[3]], stiffness: 1 }),
-    new Spring({ particles: [particles[1], particles[2]], stiffness: 1 }),
+  const body = [
+    [particles[0], particles[1], particles[6]],
+    [particles[2], particles[3], particles[7]],
+    [particles[4], particles[5], particles[8]],
   ];
 
-  engineState.addObject(new SoftBodyObject({ springs }));
+  engineState.addObject(new SoftBodyObject({ particles: body }));
 
   const mouseState: MouseState = {
     isMouseDown: false,
