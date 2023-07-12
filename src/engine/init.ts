@@ -16,34 +16,35 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const engineState = new EngineState(canvas.width, canvas.height);
 
-  const particles = [
-    new Particle({ x: 100, y: 200, mass: 20 }),
-    new Particle({ x: 140, y: 200, mass: 20 }),
-    new Particle({ x: 100, y: 240, mass: 20 }),
-    new Particle({ x: 140, y: 240, mass: 20 }),
-    new Particle({ x: 100, y: 280, mass: 20 }),
-    new Particle({ x: 140, y: 280, mass: 20 }),
-    new Particle({ x: 180, y: 200, mass: 20 }),
-    new Particle({ x: 180, y: 240, mass: 20 }),
-    new Particle({ x: 180, y: 280, mass: 20 }),
+  const particleDistribution = [
+    [
+      new Particle({ x: 100, y: 200, mass: 20 }),
+      new Particle({ x: 140, y: 200, mass: 20 }),
+      new Particle({ x: 180, y: 200, mass: 20 }),
+    ],
+    [
+      new Particle({ x: 100, y: 240, mass: 20 }),
+      new Particle({ x: 140, y: 240, mass: 20 }),
+      new Particle({ x: 180, y: 240, mass: 20 }),
+    ],
+    [
+      new Particle({ x: 100, y: 280, mass: 20 }),
+      new Particle({ x: 140, y: 280, mass: 20 }),
+      new Particle({ x: 180, y: 280, mass: 20 }),
+    ],
   ];
 
-  const body = [
-    [particles[0], particles[1], particles[6]],
-    [particles[2], particles[3], particles[7]],
-    [particles[4], particles[5], particles[8]],
-  ];
+  const softBody = new SoftBodyObject({ particles: particleDistribution });
 
-  engineState.addObject(new SoftBodyObject({ particles: body }));
+  engineState.addObject(softBody);
 
   const mouseState: MouseState = {
     isMouseDown: false,
     position: new Vector(0, 0),
     closestParticle: null,
-    closestParticleDistance: null,
   };
 
-  attachMouseDownListener(canvas, mouseState, particles);
+  attachMouseDownListener(canvas, mouseState, softBody);
   attachMouseUpListener(mouseState);
   attachMouseMoveListener(canvas, mouseState);
 

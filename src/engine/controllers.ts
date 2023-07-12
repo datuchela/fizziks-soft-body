@@ -1,5 +1,6 @@
 import { Vector } from "./Vector";
 import { Particle } from "./objects/Particle";
+import { SoftBodyObject } from "./objects/SoftBodyObject";
 
 export enum KeyCode {
   ArrowUp = "ArrowUp",
@@ -112,38 +113,34 @@ export type MouseState = {
   isMouseDown: boolean;
   position: Vector;
   closestParticle: Particle | null;
-  closestParticleDistance: number | null;
 };
 
 export const attachMouseDownListener = (
   canvas: HTMLCanvasElement,
   mouseState: MouseState,
-  particles: Particle[]
+  softBody: SoftBodyObject
 ) => {
   canvas.addEventListener("mousedown", (e) => {
     mouseState.isMouseDown = true;
 
     const rect = canvas.getBoundingClientRect();
-
     mouseState.position = new Vector(
       e.clientX - rect.left,
       e.clientY - rect.top
     );
 
-    mouseState.closestParticle = particles[0];
-    mouseState.closestParticleDistance = Vector.subtract(
-      mouseState.position,
-      particles[0].p
-    ).length;
+    let closestDistance: number | undefined;
 
-    for (let i = 1; i < particles.length; ++i) {
-      const currDistance = Vector.subtract(
-        mouseState.position,
-        particles[i].p
-      ).length;
-      if (currDistance < mouseState.closestParticleDistance) {
-        mouseState.closestParticle = particles[i];
-        mouseState.closestParticleDistance = currDistance;
+    for (let r = 0; r < softBody.particles.length; ++r) {
+      for (let c = 0; c < softBody.particles[r].length; ++c) {
+        const currDistance = Vector.subtract(
+          mouseState.position,
+          softBody.particles[r][c].p
+        ).length;
+        if (closestDistance === undefined || currDistance < closestDistance) {
+          mouseState.closestParticle = softBody.particles[r][c];
+          closestDistance = currDistance;
+        }
       }
     }
   });
