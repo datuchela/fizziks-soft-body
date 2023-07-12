@@ -27,8 +27,8 @@ export class Spring {
     this.restLength =
       restLength ??
       Vector.subtract(this.particles[0].p, this.particles[1].p).length;
-    this.stiffness = stiffness ?? 0.2;
-    this.dampening = dampening ?? 0.9;
+    this.stiffness = stiffness ?? 30;
+    this.dampening = dampening ?? 20;
   }
 
   static attach = (particle1: Particle, particle2: Particle) => {
