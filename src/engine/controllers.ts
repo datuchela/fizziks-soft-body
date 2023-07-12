@@ -110,14 +110,42 @@ export const attachControllerKeysUpListener = (arrowKeys: DirectionKeys) => {
 
 export type MouseState = {
   isMouseDown: boolean;
+  position: Vector;
+  closestParticle: Particle | null;
+  closestParticleDistance: number | null;
 };
 
 export const attachMouseDownListener = (
   canvas: HTMLCanvasElement,
-  mouseState: MouseState
+  mouseState: MouseState,
+  particles: Particle[]
 ) => {
-  canvas.addEventListener("mousedown", () => {
+  canvas.addEventListener("mousedown", (e) => {
     mouseState.isMouseDown = true;
+
+    const rect = canvas.getBoundingClientRect();
+
+    mouseState.position = new Vector(
+      e.clientX - rect.left,
+      e.clientY - rect.top
+    );
+
+    mouseState.closestParticle = particles[0];
+    mouseState.closestParticleDistance = Vector.subtract(
+      mouseState.position,
+      particles[0].p
+    ).length;
+
+    for (let i = 1; i < particles.length; ++i) {
+      const currDistance = Vector.subtract(
+        mouseState.position,
+        particles[i].p
+      ).length;
+      if (currDistance < mouseState.closestParticleDistance) {
+        mouseState.closestParticle = particles[i];
+        mouseState.closestParticleDistance = currDistance;
+      }
+    }
   });
 };
 
@@ -129,42 +157,19 @@ export const attachMouseUpListener = (mouseState: MouseState) => {
 
 export const attachMouseMoveListener = (
   canvas: HTMLCanvasElement,
-  mouseState: MouseState,
-  particles: Particle[]
+  mouseState: MouseState
 ) => {
   canvas.addEventListener("mousemove", (e) => {
     if (!mouseState.isMouseDown) return;
 
     const rect = canvas.getBoundingClientRect();
 
-    const mousePosition = new Vector(
-      e.clientX - rect.left,
-      e.clientY - rect.top
-    );
-
-    let closestParticle: Particle = particles[0];
-    let closestParticleDistance: number = Vector.subtract(
-      mousePosition,
-      particles[0].p
-    ).length;
-
-    for (let i = 1; i < particles.length; ++i) {
-      const currDistance = Vector.subtract(
-        mousePosition,
-        particles[i].p
-      ).length;
-      if (currDistance < closestParticleDistance) {
-        closestParticle = particles[i];
-        closestParticleDistance = currDistance;
-      }
-    }
-
     // Restrict grabbing out of range
     // if (closestParticleDistance > 25) return;
 
-    closestParticle.f = new Vector(0, 0);
-    closestParticle.v = new Vector(0, 0);
-
-    closestParticle.p = mousePosition;
+    mouseState.position = new Vector(
+      e.clientX - rect.left,
+      e.clientY - rect.top
+    );
   });
 };

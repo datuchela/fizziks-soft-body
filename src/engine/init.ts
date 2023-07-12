@@ -1,4 +1,5 @@
 import { EngineState } from "./EngineState";
+import { Vector } from "./Vector";
 import {
   MouseState,
   attachMouseDownListener,
@@ -36,11 +37,14 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const mouseState: MouseState = {
     isMouseDown: false,
+    position: new Vector(0, 0),
+    closestParticle: null,
+    closestParticleDistance: null,
   };
 
-  attachMouseDownListener(canvas, mouseState);
+  attachMouseDownListener(canvas, mouseState, particles);
   attachMouseUpListener(mouseState);
-  attachMouseMoveListener(canvas, mouseState, particles);
+  attachMouseMoveListener(canvas, mouseState);
 
   let oldTimeStamp = 0;
   let dt: number;
@@ -59,6 +63,12 @@ export const init = (canvas: HTMLCanvasElement) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillText("FPS: " + fps, 10, 30);
+
+    // Prevent mouse-controlled particle from slipping away
+    if (mouseState.isMouseDown && mouseState.closestParticle) {
+      mouseState.closestParticle.v = new Vector(0, 0);
+      mouseState.closestParticle.p = mouseState.position;
+    }
 
     engineState.resetForces();
 
