@@ -133,9 +133,11 @@ export const attachMouseDownListener = (
 
     for (let r = 0; r < softBody.particles.length; ++r) {
       for (let c = 0; c < softBody.particles[r].length; ++c) {
+        const currentParticle = softBody.particles[r][c];
+        if (currentParticle == null) continue;
         const currDistance = Vector.subtract(
           mouseState.position,
-          softBody.particles[r][c].p
+          currentParticle.p
         ).length;
         if (closestDistance === undefined || currDistance < closestDistance) {
           mouseState.closestParticle = softBody.particles[r][c];
