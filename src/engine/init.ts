@@ -21,11 +21,10 @@ export const init = (canvas: HTMLCanvasElement) => {
     [20, 20, 20],
     [20, 100, 20],
     [20, 100, 20],
-    [20, 20, 20],
   ];
 
   const particles = SoftBodyObject.generateParticles(massDistribution, {
-    distanceBetween: 50,
+    distanceBetween: 100,
   });
 
   const softBody = new SoftBodyObject({ particles });
