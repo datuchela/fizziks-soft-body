@@ -1,0 +1,2 @@
+export const DEFAULT_SPRING_STIFFNESS = 100;
+export const DEFAULT_SPRING_DAMPENING = 50;

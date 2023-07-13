@@ -1,4 +1,8 @@
 import { Vector } from "../Vector";
+import {
+  DEFAULT_SPRING_DAMPENING,
+  DEFAULT_SPRING_STIFFNESS,
+} from "./object.constants";
 import { Particle } from "./Particle";
 
 export interface Spring {
@@ -27,8 +31,8 @@ export class Spring {
     this.restLength =
       restLength ??
       Vector.subtract(this.particles[0].p, this.particles[1].p).length;
-    this.stiffness = stiffness ?? 150;
-    this.dampening = dampening ?? 80;
+    this.stiffness = stiffness ?? DEFAULT_SPRING_STIFFNESS;
+    this.dampening = dampening ?? DEFAULT_SPRING_DAMPENING;
   }
 
   static attach = (particle1: Particle, particle2: Particle) => {
