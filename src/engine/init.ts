@@ -10,6 +10,8 @@ import {
 import { Particle } from "./objects/Particle";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
 
+const TARGET_FPS = 60;
+
 export const init = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -54,6 +56,10 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const mainLoop = (timeStamp: number) => {
     dt = (timeStamp - oldTimeStamp) / 1000;
+
+    dt = Math.min(1 / TARGET_FPS, dt);
+    dt = Math.max(1 / TARGET_FPS, dt);
+
     oldTimeStamp = timeStamp;
 
     // FPS
