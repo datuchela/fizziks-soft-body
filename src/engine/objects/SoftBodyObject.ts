@@ -66,27 +66,29 @@ export class SoftBodyObject {
     });
   };
 
-  private generateBonds = (particles: (Particle | null)[][]) => {
+  private generateBonds = (particles: (Particle | null)[][]): void => {
     for (let r = 0; r < particles.length; ++r) {
       for (let c = 0; c < particles[r].length - 1; ++c) {
         let p1 = particles[r][c];
         let p2 = particles[r][c + 1];
-        if (!p1 || !p2) continue;
+        if (p1 && p2) {
+          this.springs.push(new Spring({ particles: [p1, p2] }));
 
-        this.springs.push(new Spring({ particles: [p1, p2] }));
+          // Connect right-down
+          if (r < particles.length - 1) {
+            let p3 = particles[r + 1][c + 1];
+            if (p3) {
+              this.springs.push(new Spring({ particles: [p1, p3] }));
+            }
+          }
 
-        // Connect right-down
-        if (r < particles.length - 1) {
-          let p3 = particles[r + 1][c + 1];
-          if (!p3) continue;
-          this.springs.push(new Spring({ particles: [p1, p3] }));
-        }
-
-        // Connect up-right
-        if (r !== 0) {
-          let p3 = particles[r - 1][c + 1];
-          if (!p3) continue;
-          this.springs.push(new Spring({ particles: [p1, p3] }));
+          // Connect up-right
+          if (r !== 0) {
+            let p3 = particles[r - 1][c + 1];
+            if (p3) {
+              this.springs.push(new Spring({ particles: [p1, p3] }));
+            }
+          }
         }
       }
     }
