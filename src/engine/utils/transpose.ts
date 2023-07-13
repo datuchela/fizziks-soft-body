@@ -1,10 +1,10 @@
 export const transpose = <T>(array: T[][]) => {
   const transposedArray: T[][] = [];
 
-  for (let r = 0; r < array[0].length; ++r) {
+  for (let row = 0; row < array[0].length; ++row) {
     const newRows: T[] = [];
-    for (let c = 0; c < array.length; ++c) {
-      const value = array[c][r];
+    for (let column = 0; column < array.length; ++column) {
+      const value = array[column][row];
       newRows.push(value);
     }
 
