@@ -120,3 +120,24 @@ body {
 .cyan-text {
   color: cyan;
 }
+
+.canvas-button {
+  all: unset;
+  cursor: grab;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+}
+
+.canvas-button:focus {
+  outline: none;
+}
+
+.canvas-button:focus-visible {
+  outline: 1px solid white;
+}
+
+.canvas-button:active {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+}

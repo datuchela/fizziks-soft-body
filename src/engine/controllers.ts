@@ -1,5 +1,6 @@
 import { Vector } from "./Vector";
-import { BaseObject } from "./objects/BaseObject";
+import { Particle } from "./objects/Particle";
+import { SoftBodyObject } from "./objects/SoftBodyObject";
 
 export enum KeyCode {
   ArrowUp = "ArrowUp",
@@ -108,23 +109,72 @@ export const attachControllerKeysUpListener = (arrowKeys: DirectionKeys) => {
   });
 };
 
-export const attachController = (keys: DirectionKeys, object: BaseObject) => {
-  if (keys.up.isPressed) {
-    object.addForce(new Vector(0, -100));
-  }
-  if (keys.right.isPressed) {
-    object.addForce(new Vector(100, 0));
-  }
-  if (keys.down.isPressed) {
-    object.addForce(new Vector(0, 100));
-  }
-  if (keys.left.isPressed) {
-    object.addForce(new Vector(-100, 0));
-  }
-  if (!keys.up.isPressed && !keys.down.isPressed) {
-    object.resetAllForcesY();
-  }
-  if (!keys.left.isPressed && !keys.right.isPressed) {
-    object.resetAllForcesX();
+export type MouseState = {
+  isMouseDown: boolean;
+  position: Vector;
+  closestParticle: Particle | null;
+};
+
+export const attachMouseDownListener = (
+  canvas: HTMLCanvasElement,
+  mouseState: MouseState,
+  softBody: SoftBodyObject
+) => {
+  canvas.addEventListener("mousedown", (e) => {
+    mouseState.isMouseDown = true;
+
+    const rect = canvas.getBoundingClientRect();
+    mouseState.position = new Vector(
+      e.clientX - rect.left,
+      e.clientY - rect.top
+    );
+
+    let closestDistance: number | undefined;
+
+    for (let r = 0; r < softBody.particles.length; ++r) {
+      for (let c = 0; c < softBody.particles[r].length; ++c) {
+        const currentParticle = softBody.particles[r][c];
+        if (currentParticle === null) continue;
+        const currDistance = Vector.subtract(
+          mouseState.position,
+          currentParticle.p
+        ).length;
+        if (closestDistance === undefined || currDistance < closestDistance) {
+          mouseState.closestParticle = softBody.particles[r][c];
+          closestDistance = currDistance;
+        }
+      }
+    }
+  });
+};
+
+export const attachMouseUpListener = (mouseState: MouseState) => {
+  window.addEventListener("mouseup", () => {
+    mouseState.isMouseDown = false;
+  });
+};
+
+export const attachMouseMoveListener = (
+  canvas: HTMLCanvasElement,
+  mouseState: MouseState
+) => {
+  canvas.addEventListener("mousemove", (e) => {
+    if (!mouseState.isMouseDown) return;
+
+    const rect = canvas.getBoundingClientRect();
+
+    mouseState.position = new Vector(
+      e.clientX - rect.left,
+      e.clientY - rect.top
+    );
+  });
+};
+
+export const handleMouseControls = (mouseState: MouseState) => {
+  if (mouseState.isMouseDown && mouseState.closestParticle) {
+    // Prevent mouse-controlled particle from slipping away
+    mouseState.closestParticle.v = new Vector(0, 0);
+
+    mouseState.closestParticle.p = mouseState.position;
   }
 };

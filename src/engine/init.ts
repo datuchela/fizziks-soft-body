@@ -1,12 +1,15 @@
 import { EngineState } from "./EngineState";
+import { Vector } from "./Vector";
+import { SoftBodyObject } from "./objects/SoftBodyObject";
 import {
-  arrowKeys,
-  attachController,
-  attachControllerKeysDownListener,
-  attachControllerKeysUpListener,
-  wasdKeys,
+  MouseState,
+  attachMouseDownListener,
+  attachMouseMoveListener,
+  attachMouseUpListener,
+  handleMouseControls,
 } from "./controllers";
-import { Circle } from "./objects/Circle";
+
+const TARGET_FPS = 60;
 
 export const init = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext("2d");
@@ -14,41 +17,44 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const engineState = new EngineState(canvas.width, canvas.height);
 
-  const circle1 = new Circle({
-    radius: 25,
-    mass: 5,
-    x: 150,
-    y: 90,
-    friction: 0.1,
-  });
-  const circle2 = new Circle({
-    radius: 40,
-    mass: 30,
-    x: 500,
-    y: 170,
-    friction: 0.01,
+  const massDistribution = [
+    [20, 20, 20],
+    [20, 100, 20],
+    [20, 100, 20],
+  ];
+
+  const particles = SoftBodyObject.generateParticles(massDistribution, {
+    distanceBetween: 100,
   });
 
-  engineState.addObject(circle1);
-  engineState.addObject(circle2);
+  const softBody = new SoftBodyObject({ particles });
 
-  attachControllerKeysDownListener(arrowKeys);
-  attachControllerKeysUpListener(arrowKeys);
+  engineState.addObject(softBody);
 
-  attachControllerKeysDownListener(wasdKeys);
-  attachControllerKeysUpListener(wasdKeys);
+  const mouseState: MouseState = {
+    isMouseDown: false,
+    position: new Vector(0, 0),
+    closestParticle: null,
+  };
+
+  attachMouseDownListener(canvas, mouseState, softBody);
+  attachMouseUpListener(mouseState);
+  attachMouseMoveListener(canvas, mouseState);
 
   let oldTimeStamp = 0;
-  let dt;
+  let dt: number;
   let fps;
 
   const mainLoop = (timeStamp: number) => {
-    dt = (timeStamp - oldTimeStamp) / 500;
+    dt = (timeStamp - oldTimeStamp) / 1000;
+
+    dt = Math.min(1 / TARGET_FPS, dt);
+    dt = Math.max(1 / TARGET_FPS, dt);
+
     oldTimeStamp = timeStamp;
 
     // FPS
     fps = Math.round(1 / dt);
-    fps = Math.min(fps, 29); // Avoid flickering
     ctx.font = "25px Arial";
     ctx.fillStyle = "white";
     //
@@ -57,10 +63,12 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     ctx.fillText("FPS: " + fps, 10, 30);
 
-    attachController(arrowKeys, circle1);
-    attachController(wasdKeys, circle2);
+    handleMouseControls(mouseState);
+
+    engineState.resetForces();
 
     engineState.updateObjects(dt);
+
     engineState.drawObjects(ctx);
 
     requestAnimationFrame(mainLoop);
