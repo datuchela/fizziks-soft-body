@@ -1,5 +1,6 @@
 import { EngineState } from "./EngineState";
 import { Vector } from "./Vector";
+import { SoftBodyObject } from "./objects/SoftBodyObject";
 import {
   MouseState,
   attachMouseDownListener,
@@ -7,8 +8,6 @@ import {
   attachMouseUpListener,
   handleMouseControls,
 } from "./controllers";
-import { Particle } from "./objects/Particle";
-import { SoftBodyObject } from "./objects/SoftBodyObject";
 
 const TARGET_FPS = 60;
 
@@ -18,25 +17,18 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const engineState = new EngineState(canvas.width, canvas.height);
 
-  const particleDistribution = [
-    [
-      new Particle({ x: 100, y: 200, mass: 20 }),
-      new Particle({ x: 140, y: 200, mass: 20 }),
-      new Particle({ x: 180, y: 200, mass: 20 }),
-    ],
-    [
-      new Particle({ x: 100, y: 240, mass: 20 }),
-      new Particle({ x: 140, y: 240, mass: 20 }),
-      new Particle({ x: 180, y: 240, mass: 20 }),
-    ],
-    [
-      new Particle({ x: 100, y: 280, mass: 20 }),
-      new Particle({ x: 140, y: 280, mass: 20 }),
-      new Particle({ x: 180, y: 280, mass: 20 }),
-    ],
+  const massDistribution = [
+    [20, 20, 20],
+    [20, 100, 20],
+    [20, 100, 20],
+    [20, 20, 20],
   ];
 
-  const softBody = new SoftBodyObject({ particles: particleDistribution });
+  const particles = SoftBodyObject.generateParticles(massDistribution, {
+    distanceBetween: 50,
+  });
+
+  const softBody = new SoftBodyObject({ particles });
 
   engineState.addObject(softBody);
 

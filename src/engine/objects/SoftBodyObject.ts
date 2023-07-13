@@ -4,12 +4,12 @@ import { Particle } from "./Particle";
 import { Spring } from "./Spring";
 
 export interface SoftBodyObject {
-  particles: Particle[][];
+  particles: (Particle | null)[][];
   springs: Spring[];
 }
 
 export interface PhysicsObjectConstructorProps {
-  particles: Particle[][];
+  particles: (Particle | null)[][];
 }
 
 export class SoftBodyObject {
@@ -46,7 +46,27 @@ export class SoftBodyObject {
     });
   };
 
-  private generateBonds = (particles: Particle[][]) => {
+  static generateParticles = (
+    massDistribution: (number | null)[][],
+    options?: { offsetX?: number; offsetY?: number; distanceBetween?: number }
+  ): (Particle | null)[][] => {
+    const offsetX = options?.offsetX ?? 100;
+    const offsetY = options?.offsetY ?? 200;
+    const distanceBetween = options?.distanceBetween ?? 80;
+
+    return transpose(massDistribution).map((row, r) => {
+      return row.map((mass, c) => {
+        if (mass === null) return null;
+        return new Particle({
+          x: offsetX + r * distanceBetween,
+          y: offsetY + c * distanceBetween,
+          mass,
+        });
+      });
+    });
+  };
+
+  private generateBonds = (particles: (Particle | null)[][]) => {
     for (let r = 0; r < particles.length; ++r) {
       for (let c = 0; c < particles[r].length - 1; ++c) {
         let p1 = particles[r][c];
