@@ -4,56 +4,20 @@ import { Particle } from "./Particle";
 import { Spring } from "./Spring";
 
 export interface SoftBodyObject {
-  particles: Particle[];
+  particles: (Particle | null)[][];
   springs: Spring[];
 }
 
 export interface PhysicsObjectConstructorProps {
-  particles: Particle[];
+  particles: (Particle | null)[][];
 }
 
 export class SoftBodyObject {
   constructor({ particles }: PhysicsObjectConstructorProps) {
     this.particles = particles;
-    this.springs = SoftBodyObject.generateBonds(particles);
-  }
-
-  get boundingRect() {
-    let toppest: number | undefined;
-    let leftest: number | undefined;
-    let rightest: number | undefined;
-    let bottomest: number | undefined;
-    for (let i = 0; i < this.particles.length; ++i) {
-      const { x, y } = this.particles[i];
-      if (toppest === undefined || y < toppest) {
-        toppest = y;
-      }
-      if (leftest === undefined || x < leftest) {
-        leftest = x;
-      }
-      if (rightest === undefined || x > rightest) {
-        rightest = x;
-      }
-      if (bottomest === undefined || y > bottomest) {
-        bottomest = y;
-      }
-    }
-
-    if (
-      toppest === undefined ||
-      leftest === undefined ||
-      rightest === undefined ||
-      bottomest === undefined
-    ) {
-      throw new Error("Something bad happened while calculating boundingRect");
-    }
-
-    return {
-      topLeft: { x: leftest, y: toppest },
-      topRight: { x: rightest, y: toppest },
-      bottomLeft: { x: leftest, y: bottomest },
-      bottomRight: { x: rightest, y: bottomest },
-    };
+    this.springs = [];
+    this.generateBonds(particles);
+    this.generateBonds(transpose(particles));
   }
 
   resetForces = () => {
@@ -102,20 +66,31 @@ export class SoftBodyObject {
     });
   };
 
-  static generateBonds = (particles: Particle[]): Spring[] => {
-    const springs: Spring[] = [];
-    let p1;
-    let p2;
-    const lastIndex = particles.length - 1;
-    for (let i = 0; i < particles.length; ++i) {
-      p1 = particles[i];
-      if (i !== lastIndex) {
-        p2 = particles[i + 1];
-      } else {
-        p2 = particles[0];
+  private generateBonds = (particles: (Particle | null)[][]): void => {
+    for (let r = 0; r < particles.length; ++r) {
+      for (let c = 0; c < particles[r].length - 1; ++c) {
+        let p1 = particles[r][c];
+        let p2 = particles[r][c + 1];
+        if (p1 && p2) {
+          this.springs.push(new Spring({ particles: [p1, p2] }));
+
+          // Connect right-down
+          if (r < particles.length - 1) {
+            let p3 = particles[r + 1][c + 1];
+            if (p3) {
+              this.springs.push(new Spring({ particles: [p1, p3] }));
+            }
+          }
+
+          // Connect up-right
+          if (r !== 0) {
+            let p3 = particles[r - 1][c + 1];
+            if (p3) {
+              this.springs.push(new Spring({ particles: [p1, p3] }));
+            }
+          }
+        }
       }
-      springs.push(new Spring({ particles: [p1, p2] }));
     }
-    return springs;
   };
 }

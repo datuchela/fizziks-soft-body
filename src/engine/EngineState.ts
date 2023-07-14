@@ -35,18 +35,6 @@ export class EngineState {
     });
   };
 
-  detectCollisions = () => {
-    let obj1: SoftBodyObject;
-    let obj2: SoftBodyObject;
-    for (let i = 0; i < this.objects.length; ++i) {
-      obj1 = this.objects[i];
-      for (let j = i + 1; j < this.objects.length - 1; ++j) {
-        obj2 = this.objects[j];
-        // Check for collisions
-      }
-    }
-  };
-
   updateObjects = (dt: number) => {
     this.objects.forEach((obj) => {
       obj.update(dt);
