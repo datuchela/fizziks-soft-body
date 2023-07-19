@@ -1,3 +1,4 @@
+import { bodyIntersect } from "./helpers/bodyIntersect";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
 
 enum EngineStateValue {
@@ -35,14 +36,15 @@ export class EngineState {
     });
   };
 
-  detectCollisions = () => {
+  detectCollisions = (ctx: CanvasRenderingContext2D) => {
     let obj1: SoftBodyObject;
     let obj2: SoftBodyObject;
     for (let i = 0; i < this.objects.length; ++i) {
       obj1 = this.objects[i];
-      for (let j = i + 1; j < this.objects.length - 1; ++j) {
+      for (let j = i + 1; j < this.objects.length; ++j) {
         obj2 = this.objects[j];
         // Check for collisions
+        bodyIntersect(obj1, obj2, ctx);
       }
     }
   };

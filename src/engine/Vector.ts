@@ -43,6 +43,20 @@ export class Vector {
     );
   }
 
+  static isEqual = (v1: Vector, v2: Vector): boolean => {
+    if (
+      Math.floor(v1.x) === Math.floor(v2.x) &&
+      Math.floor(v1.y) === Math.floor(v2.y)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  static crossProduct = (v1: Vector, v2: Vector): number => {
+    return v1.x * v2.y - v1.y * v2.x;
+  };
+
   static dotProduct = (v1: Vector, v2: Vector): number => {
     return v1.x * v2.x + v1.y * v2.y;
   };

@@ -49,10 +49,14 @@ export class SoftBodyObject {
     }
 
     return {
-      topLeft: { x: leftest, y: toppest },
-      topRight: { x: rightest, y: toppest },
-      bottomLeft: { x: leftest, y: bottomest },
-      bottomRight: { x: rightest, y: bottomest },
+      toppest,
+      rightest,
+      bottomest,
+      leftest,
+      topLeft: new Vector(leftest, toppest),
+      topRight: new Vector(rightest, toppest),
+      bottomLeft: new Vector(leftest, bottomest),
+      bottomRight: new Vector(rightest, bottomest),
     };
   }
 

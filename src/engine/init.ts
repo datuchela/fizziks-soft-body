@@ -35,7 +35,6 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const softBodyShape2: Shape = [
     { x: 400, y: 300, mass: 10 },
-    { x: 500, y: 300, mass: 10 },
     { x: 500, y: 400, mass: 10 },
     { x: 400, y: 400, mass: 10 },
   ];
@@ -60,25 +59,9 @@ export const init = (canvas: HTMLCanvasElement) => {
   );
 
   const softBody2 = generateSoftBody(softBodyShape2);
-  softBody2.springs.push(
-    new Spring({ particles: [softBody2.particles[0], softBody2.particles[2]] })
-  );
-  softBody2.springs.push(
-    new Spring({ particles: [softBody2.particles[1], softBody2.particles[3]] })
-  );
 
   engineState.addObject(softBody);
   engineState.addObject(softBody2);
-
-  // const boundingParticles = engineState.objects.map((obj) => {
-  //   const { topLeft, topRight, bottomLeft, bottomRight } = obj.boundingRect;
-  //   return [
-  //     new Particle({ x: topLeft.x, y: topLeft.y, mass: 10 }),
-  //     new Particle({ x: topRight.x, y: topRight.y, mass: 10 }),
-  //     new Particle({ x: bottomLeft.x, y: bottomLeft.y, mass: 10 }),
-  //     new Particle({ x: bottomRight.x, y: bottomRight.y, mass: 10 }),
-  //   ];
-  // });
 
   const mouseState: MouseState = {
     isMouseDown: false,
@@ -115,6 +98,8 @@ export const init = (canvas: HTMLCanvasElement) => {
     handleMouseControls(mouseState);
 
     engineState.resetForces();
+
+    engineState.detectCollisions(ctx);
 
     engineState.updateObjects(dt);
 

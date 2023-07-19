@@ -7,6 +7,7 @@ export interface Particle {
   f: Vector;
   mass: number;
   radius: number;
+  isColliding: boolean;
 }
 
 export interface ParticleConstructorProps {
@@ -46,7 +47,7 @@ export class Particle {
 
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-    ctx.fillStyle = "yellow";
+    ctx.fillStyle = this.isColliding ? "red" : "yellow";
     ctx.fill();
   };
 
