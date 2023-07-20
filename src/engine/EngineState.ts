@@ -36,7 +36,7 @@ export class EngineState {
     });
   };
 
-  detectCollisions = (ctx: CanvasRenderingContext2D) => {
+  detectCollisions = () => {
     let obj1: SoftBodyObject;
     let obj2: SoftBodyObject;
     for (let i = 0; i < this.objects.length; ++i) {
@@ -44,7 +44,7 @@ export class EngineState {
       for (let j = i + 1; j < this.objects.length; ++j) {
         obj2 = this.objects[j];
         // Check for collisions
-        bodyIntersect(obj1, obj2, ctx);
+        bodyIntersect(obj1, obj2);
       }
     }
   };

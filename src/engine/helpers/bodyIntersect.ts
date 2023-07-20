@@ -3,11 +3,7 @@ import { Particle } from "../objects/Particle";
 import { SoftBodyObject } from "../objects/SoftBodyObject";
 import { segmentIntersect } from "../utils/lineIntersect";
 
-export function bodyIntersect(
-  obj1: SoftBodyObject,
-  obj2: SoftBodyObject,
-  ctx: CanvasRenderingContext2D
-) {
+export function bodyIntersect(obj1: SoftBodyObject, obj2: SoftBodyObject) {
   for (let i = 0; i < obj1.particles.length; ++i) {
     const currentParticle = obj1.particles[i];
     const { rightest } = obj2.boundingRect;

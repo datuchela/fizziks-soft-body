@@ -34,9 +34,10 @@ export const init = (canvas: HTMLCanvasElement) => {
   ];
 
   const softBodyShape2: Shape = [
-    { x: 400, y: 300, mass: 10 },
-    { x: 500, y: 400, mass: 10 },
     { x: 400, y: 400, mass: 10 },
+    { x: 500, y: 400, mass: 10 },
+    { x: 450, y: 300, mass: 10 },
+    { x: 700, y: 300, mass: 10 },
   ];
 
   const generateSoftBody = (shape: Shape) => {
@@ -99,7 +100,7 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     engineState.resetForces();
 
-    engineState.detectCollisions(ctx);
+    engineState.detectCollisions();
 
     engineState.updateObjects(dt);
 
