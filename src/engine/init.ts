@@ -1,7 +1,5 @@
 import { EngineState } from "./EngineState";
-import { Particle } from "./objects/Particle";
 import { Spring } from "./objects/Spring";
-import { SoftBodyObject } from "./objects/SoftBodyObject";
 import { Vector } from "./Vector";
 
 import {
