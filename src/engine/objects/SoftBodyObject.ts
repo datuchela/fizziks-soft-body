@@ -1,5 +1,6 @@
 import { Vector } from "../Vector";
 import { transpose } from "../utils/transpose";
+import { Segment } from "../utils/types";
 import { Particle } from "./Particle";
 import { Spring } from "./Spring";
 
@@ -86,6 +87,26 @@ export class SoftBodyObject {
     });
   };
 
+  getSides = (): Segment[] => {
+    const sides: Segment[] = [];
+    let sideParticle1;
+    let sideParticle2;
+
+    for (let i = 0; i < this.particles.length; ++i) {
+      sideParticle1 = this.particles[i];
+      sideParticle2 = this.particles[i + 1];
+      if (i === this.particles.length - 1) {
+        sideParticle1 = this.particles[0];
+        sideParticle2 = this.particles[i];
+      }
+
+      const side: Segment = [sideParticle1.p, sideParticle2.p];
+      sides.push(side);
+    }
+
+    return sides;
+  };
+
   static generateParticles = (
     massDistribution: (number | null)[][],
     options?: { offsetX?: number; offsetY?: number; distanceBetween?: number }
@@ -110,10 +131,9 @@ export class SoftBodyObject {
     const springs: Spring[] = [];
     let p1;
     let p2;
-    const lastIndex = particles.length - 1;
     for (let i = 0; i < particles.length; ++i) {
       p1 = particles[i];
-      if (i !== lastIndex) {
+      if (i !== particles.length - 1) {
         p2 = particles[i + 1];
       } else {
         p2 = particles[0];

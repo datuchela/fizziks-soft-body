@@ -1,6 +1,9 @@
 import { EngineState } from "./EngineState";
-import { Vector } from "./Vector";
+import { Particle } from "./objects/Particle";
+import { Spring } from "./objects/Spring";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
+import { Vector } from "./Vector";
+
 import {
   MouseState,
   attachMouseDownListener,
@@ -8,15 +11,9 @@ import {
   attachMouseUpListener,
   handleMouseControls,
 } from "./controllers";
-import { Particle } from "./objects/Particle";
-import { Spring } from "./objects/Spring";
 
-type Shape = {
-  x: number;
-  y: number;
-  mass: number;
-  additionalBonds?: number[];
-}[];
+import { generateSoftBody } from "./helpers/generateSoftBody";
+import { softBodyShape2, square } from "./softBodyShapes";
 
 const TARGET_FPS = 60;
 
@@ -26,30 +23,7 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const engineState = new EngineState(canvas.width, canvas.height);
 
-  const softBodyShape: Shape = [
-    { x: 100, y: 100, mass: 10 },
-    { x: 150, y: 100, mass: 10 },
-    { x: 150, y: 150, mass: 10 },
-    { x: 100, y: 150, mass: 10 },
-  ];
-
-  const softBodyShape2: Shape = [
-    { x: 400, y: 400, mass: 10 },
-    { x: 500, y: 400, mass: 10 },
-    { x: 450, y: 300, mass: 10 },
-    { x: 700, y: 300, mass: 10 },
-  ];
-
-  const generateSoftBody = (shape: Shape) => {
-    const particles: Particle[] = [];
-    for (let i = 0; i < shape.length; ++i) {
-      particles.push(new Particle({ ...shape[i], mass: 20 }));
-    }
-
-    return new SoftBodyObject({ particles });
-  };
-
-  const softBody = generateSoftBody(softBodyShape);
+  const softBody = generateSoftBody(square);
 
   // add inside bonds
   softBody.springs.push(
@@ -100,6 +74,7 @@ export const init = (canvas: HTMLCanvasElement) => {
 
     engineState.resetForces();
 
+    engineState.resetCollisions();
     engineState.detectCollisions();
 
     engineState.updateObjects(dt);
