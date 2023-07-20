@@ -1,6 +1,6 @@
 import { Vector } from "../Vector";
 
-export const segmentIntersect = (
+export const getSegmentIntersection = (
   A: Vector,
   B: Vector,
   C: Vector,

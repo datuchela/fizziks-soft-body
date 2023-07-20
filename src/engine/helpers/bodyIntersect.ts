@@ -1,7 +1,7 @@
 import { Vector } from "../Vector";
 import { Particle } from "../objects/Particle";
 import { SoftBodyObject } from "../objects/SoftBodyObject";
-import { segmentIntersect } from "../utils/lineIntersect";
+import { getSegmentIntersection } from "../utils/getSegmentIntersection";
 
 export function bodyIntersect(obj1: SoftBodyObject, obj2: SoftBodyObject) {
   for (let i = 0; i < obj1.particles.length; ++i) {
@@ -24,7 +24,7 @@ export function bodyIntersect(obj1: SoftBodyObject, obj2: SoftBodyObject) {
         wallParticle2 = obj2.particles[j + 1];
       }
 
-      const intersection = segmentIntersect(
+      const intersection = getSegmentIntersection(
         currentParticle.p,
         tempPointRight,
         wallParticle1.p,
