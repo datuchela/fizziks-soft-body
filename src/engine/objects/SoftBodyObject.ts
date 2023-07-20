@@ -1,5 +1,4 @@
 import { Vector } from "../Vector";
-import { transpose } from "../utils/transpose";
 import { Segment } from "../utils/types";
 import { Particle } from "./Particle";
 import { Spring } from "./Spring";
@@ -105,26 +104,6 @@ export class SoftBodyObject {
     }
 
     return sides;
-  };
-
-  static generateParticles = (
-    massDistribution: (number | null)[][],
-    options?: { offsetX?: number; offsetY?: number; distanceBetween?: number }
-  ): (Particle | null)[][] => {
-    const offsetX = options?.offsetX ?? 100;
-    const offsetY = options?.offsetY ?? 200;
-    const distanceBetween = options?.distanceBetween ?? 80;
-
-    return transpose(massDistribution).map((row, r) => {
-      return row.map((mass, c) => {
-        if (mass === null) return null;
-        return new Particle({
-          x: offsetX + r * distanceBetween,
-          y: offsetY + c * distanceBetween,
-          mass,
-        });
-      });
-    });
   };
 
   static generateBonds = (particles: Particle[]): Spring[] => {
