@@ -1,5 +1,8 @@
 import { Vector } from "../Vector";
 
+const COLLIDING_COLOR = "red";
+const NOT_COLLIDING_COLOR = "yellow";
+
 export interface Particle {
   name: string | undefined;
   p: Vector;
@@ -47,7 +50,7 @@ export class Particle {
 
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-    ctx.fillStyle = this.isColliding ? "red" : "yellow";
+    ctx.fillStyle = this.isColliding ? COLLIDING_COLOR : NOT_COLLIDING_COLOR;
     ctx.fill();
   };
 
