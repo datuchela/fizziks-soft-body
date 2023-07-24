@@ -19,31 +19,32 @@ export class SoftBodyObject {
   }
 
   get boundingRect() {
-    let toppest: number | undefined;
-    let leftest: number | undefined;
-    let rightest: number | undefined;
-    let bottomest: number | undefined;
+    let toppest = Number.MAX_SAFE_INTEGER;
+    let leftest = Number.MAX_SAFE_INTEGER;
+    let rightest = Number.MIN_SAFE_INTEGER;
+    let bottomest = Number.MIN_SAFE_INTEGER;
+
     for (let i = 0; i < this.particles.length; ++i) {
       const { x, y } = this.particles[i];
-      if (toppest === undefined || y < toppest) {
+      if (y < toppest) {
         toppest = y;
       }
-      if (leftest === undefined || x < leftest) {
+      if (x < leftest) {
         leftest = x;
       }
-      if (rightest === undefined || x > rightest) {
+      if (x > rightest) {
         rightest = x;
       }
-      if (bottomest === undefined || y > bottomest) {
+      if (y > bottomest) {
         bottomest = y;
       }
     }
 
     if (
-      toppest === undefined ||
-      leftest === undefined ||
-      rightest === undefined ||
-      bottomest === undefined
+      toppest === Number.MAX_SAFE_INTEGER ||
+      leftest === Number.MAX_SAFE_INTEGER ||
+      rightest === Number.MIN_SAFE_INTEGER ||
+      bottomest === Number.MIN_SAFE_INTEGER
     ) {
       throw new Error("Something bad happened while calculating boundingRect");
     }
