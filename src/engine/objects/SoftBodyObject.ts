@@ -24,8 +24,7 @@ export class SoftBodyObject {
     let right = Number.MIN_SAFE_INTEGER;
     let bottom = Number.MIN_SAFE_INTEGER;
 
-    for (let i = 0; i < this.particles.length; ++i) {
-      const { x, y } = this.particles[i];
+    for (const { x, y } of this.particles) {
       if (y < top) {
         top = y;
       }
