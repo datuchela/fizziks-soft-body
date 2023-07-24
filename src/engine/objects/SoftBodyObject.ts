@@ -107,18 +107,10 @@ export class SoftBodyObject {
   };
 
   static generateBonds = (particles: Particle[]): Spring[] => {
-    const springs: Spring[] = [];
-    let p1;
-    let p2;
-    for (let i = 0; i < particles.length; ++i) {
-      p1 = particles[i];
-      if (i !== particles.length - 1) {
-        p2 = particles[i + 1];
-      } else {
-        p2 = particles[0];
-      }
-      springs.push(new Spring({ particles: [p1, p2] }));
-    }
-    return springs;
+    return particles.map((particle, index) => {
+      const nextIndex = index !== particles.length - 1 ? index + 1 : 0;
+      const nextParticle = particles[nextIndex];
+      return new Spring({ particles: [particle, nextParticle] });
+    });
   };
 }
