@@ -19,45 +19,45 @@ export class SoftBodyObject {
   }
 
   get boundingRect() {
-    let toppest = Number.MAX_SAFE_INTEGER;
-    let leftest = Number.MAX_SAFE_INTEGER;
-    let rightest = Number.MIN_SAFE_INTEGER;
-    let bottomest = Number.MIN_SAFE_INTEGER;
+    let top = Number.MAX_SAFE_INTEGER;
+    let left = Number.MAX_SAFE_INTEGER;
+    let right = Number.MIN_SAFE_INTEGER;
+    let bottom = Number.MIN_SAFE_INTEGER;
 
     for (let i = 0; i < this.particles.length; ++i) {
       const { x, y } = this.particles[i];
-      if (y < toppest) {
-        toppest = y;
+      if (y < top) {
+        top = y;
       }
-      if (x < leftest) {
-        leftest = x;
+      if (x < left) {
+        left = x;
       }
-      if (x > rightest) {
-        rightest = x;
+      if (x > right) {
+        right = x;
       }
-      if (y > bottomest) {
-        bottomest = y;
+      if (y > bottom) {
+        bottom = y;
       }
     }
 
     if (
-      toppest === Number.MAX_SAFE_INTEGER ||
-      leftest === Number.MAX_SAFE_INTEGER ||
-      rightest === Number.MIN_SAFE_INTEGER ||
-      bottomest === Number.MIN_SAFE_INTEGER
+      top === Number.MAX_SAFE_INTEGER ||
+      left === Number.MAX_SAFE_INTEGER ||
+      right === Number.MIN_SAFE_INTEGER ||
+      bottom === Number.MIN_SAFE_INTEGER
     ) {
       throw new Error("Something bad happened while calculating boundingRect");
     }
 
     return {
-      toppest,
-      rightest,
-      bottomest,
-      leftest,
-      topLeft: new Vector(leftest, toppest),
-      topRight: new Vector(rightest, toppest),
-      bottomLeft: new Vector(leftest, bottomest),
-      bottomRight: new Vector(rightest, bottomest),
+      top,
+      right,
+      bottom,
+      left,
+      topLeft: new Vector(left, top),
+      topRight: new Vector(right, top),
+      bottomLeft: new Vector(left, bottom),
+      bottomRight: new Vector(right, bottom),
     };
   }
 
