@@ -87,23 +87,11 @@ export class SoftBodyObject {
   };
 
   getSides = (): Segment[] => {
-    const sides: Segment[] = [];
-    let sideParticle1;
-    let sideParticle2;
-
-    for (let i = 0; i < this.particles.length; ++i) {
-      sideParticle1 = this.particles[i];
-      sideParticle2 = this.particles[i + 1];
-      if (i === this.particles.length - 1) {
-        sideParticle1 = this.particles[0];
-        sideParticle2 = this.particles[i];
-      }
-
-      const side: Segment = [sideParticle1.p, sideParticle2.p];
-      sides.push(side);
-    }
-
-    return sides;
+    return this.particles.map((particle, index) => {
+      const nextIndex = index !== this.particles.length - 1 ? index + 1 : 0;
+      const nextParticle = this.particles[nextIndex];
+      return [particle.p, nextParticle.p];
+    });
   };
 
   static generateBonds = (particles: Particle[]): Spring[] => {
