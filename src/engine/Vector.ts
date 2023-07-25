@@ -44,10 +44,7 @@ export class Vector {
   }
 
   static isEqual = (v1: Vector, v2: Vector): boolean => {
-    if (v1.x === v2.x && v1.y === v2.y) {
-      return true;
-    }
-    return false;
+    return v1.x === v2.x && v1.y === v2.y;
   };
 
   static crossProduct = (v1: Vector, v2: Vector): number => {
