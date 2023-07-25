@@ -1,23 +1,63 @@
 import { Vector } from "../Vector";
-import { transpose } from "../utils/transpose";
+import { Segment } from "../utils/types";
 import { Particle } from "./Particle";
 import { Spring } from "./Spring";
 
 export interface SoftBodyObject {
-  particles: (Particle | null)[][];
+  particles: Particle[];
   springs: Spring[];
 }
 
 export interface PhysicsObjectConstructorProps {
-  particles: (Particle | null)[][];
+  particles: Particle[];
 }
 
 export class SoftBodyObject {
   constructor({ particles }: PhysicsObjectConstructorProps) {
     this.particles = particles;
-    this.springs = [];
-    this.generateBonds(particles);
-    this.generateBonds(transpose(particles));
+    this.springs = SoftBodyObject.generateBonds(particles);
+  }
+
+  get boundingRect() {
+    let top = Number.MAX_SAFE_INTEGER;
+    let left = Number.MAX_SAFE_INTEGER;
+    let right = Number.MIN_SAFE_INTEGER;
+    let bottom = Number.MIN_SAFE_INTEGER;
+
+    for (const { x, y } of this.particles) {
+      if (y < top) {
+        top = y;
+      }
+      if (x < left) {
+        left = x;
+      }
+      if (x > right) {
+        right = x;
+      }
+      if (y > bottom) {
+        bottom = y;
+      }
+    }
+
+    if (
+      top === Number.MAX_SAFE_INTEGER ||
+      left === Number.MAX_SAFE_INTEGER ||
+      right === Number.MIN_SAFE_INTEGER ||
+      bottom === Number.MIN_SAFE_INTEGER
+    ) {
+      throw new Error("Something bad happened while calculating boundingRect");
+    }
+
+    return {
+      top,
+      right,
+      bottom,
+      left,
+      topLeft: new Vector(left, top),
+      topRight: new Vector(right, top),
+      bottomLeft: new Vector(left, bottom),
+      bottomRight: new Vector(right, bottom),
+    };
   }
 
   resetForces = () => {
@@ -46,51 +86,19 @@ export class SoftBodyObject {
     });
   };
 
-  static generateParticles = (
-    massDistribution: (number | null)[][],
-    options?: { offsetX?: number; offsetY?: number; distanceBetween?: number }
-  ): (Particle | null)[][] => {
-    const offsetX = options?.offsetX ?? 100;
-    const offsetY = options?.offsetY ?? 200;
-    const distanceBetween = options?.distanceBetween ?? 80;
-
-    return transpose(massDistribution).map((row, r) => {
-      return row.map((mass, c) => {
-        if (mass === null) return null;
-        return new Particle({
-          x: offsetX + r * distanceBetween,
-          y: offsetY + c * distanceBetween,
-          mass,
-        });
-      });
+  getSides = (): Segment[] => {
+    return this.particles.map((particle, index) => {
+      const nextIndex = index !== this.particles.length - 1 ? index + 1 : 0;
+      const nextParticle = this.particles[nextIndex];
+      return [particle.p, nextParticle.p];
     });
   };
 
-  private generateBonds = (particles: (Particle | null)[][]): void => {
-    for (let r = 0; r < particles.length; ++r) {
-      for (let c = 0; c < particles[r].length - 1; ++c) {
-        let p1 = particles[r][c];
-        let p2 = particles[r][c + 1];
-        if (p1 && p2) {
-          this.springs.push(new Spring({ particles: [p1, p2] }));
-
-          // Connect right-down
-          if (r < particles.length - 1) {
-            let p3 = particles[r + 1][c + 1];
-            if (p3) {
-              this.springs.push(new Spring({ particles: [p1, p3] }));
-            }
-          }
-
-          // Connect up-right
-          if (r !== 0) {
-            let p3 = particles[r - 1][c + 1];
-            if (p3) {
-              this.springs.push(new Spring({ particles: [p1, p3] }));
-            }
-          }
-        }
-      }
-    }
+  static generateBonds = (particles: Particle[]): Spring[] => {
+    return particles.map((particle, index) => {
+      const nextIndex = index !== particles.length - 1 ? index + 1 : 0;
+      const nextParticle = particles[nextIndex];
+      return new Spring({ particles: [particle, nextParticle] });
+    });
   };
 }

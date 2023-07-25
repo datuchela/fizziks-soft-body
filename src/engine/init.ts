@@ -1,6 +1,7 @@
 import { EngineState } from "./EngineState";
+import { Spring } from "./objects/Spring";
 import { Vector } from "./Vector";
-import { SoftBodyObject } from "./objects/SoftBodyObject";
+
 import {
   MouseState,
   attachMouseDownListener,
@@ -8,6 +9,9 @@ import {
   attachMouseUpListener,
   handleMouseControls,
 } from "./controllers";
+
+import { generateSoftBody } from "./helpers/generateSoftBody";
+import { softBodyShape2, square } from "./softBodyShapes";
 
 const TARGET_FPS = 60;
 
@@ -17,19 +21,20 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const engineState = new EngineState(canvas.width, canvas.height);
 
-  const massDistribution = [
-    [20, 20, 20],
-    [20, 100, 20],
-    [20, 100, 20],
-  ];
+  const softBody = generateSoftBody(square);
 
-  const particles = SoftBodyObject.generateParticles(massDistribution, {
-    distanceBetween: 100,
-  });
+  // add inside bonds
+  softBody.springs.push(
+    new Spring({ particles: [softBody.particles[0], softBody.particles[2]] })
+  );
+  softBody.springs.push(
+    new Spring({ particles: [softBody.particles[1], softBody.particles[3]] })
+  );
 
-  const softBody = new SoftBodyObject({ particles });
+  const softBody2 = generateSoftBody(softBodyShape2);
 
   engineState.addObject(softBody);
+  engineState.addObject(softBody2);
 
   const mouseState: MouseState = {
     isMouseDown: false,
@@ -66,6 +71,9 @@ export const init = (canvas: HTMLCanvasElement) => {
     handleMouseControls(mouseState);
 
     engineState.resetForces();
+
+    engineState.resetCollisions();
+    engineState.detectCollisions();
 
     engineState.updateObjects(dt);
 

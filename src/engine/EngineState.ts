@@ -1,3 +1,4 @@
+import { getBodyToBodyIntersections } from "./helpers/getBodyToBodyIntersections.ts";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
 
 enum EngineStateValue {
@@ -32,6 +33,23 @@ export class EngineState {
   resetForces = () => {
     this.objects.forEach((obj) => {
       obj.resetForces();
+    });
+  };
+
+  resetCollisions = () => {
+    this.objects.forEach((obj) => {
+      obj.particles.forEach((particle) => {
+        particle.isColliding = false;
+      });
+    });
+  };
+
+  detectCollisions = () => {
+    this.objects.forEach((obj1, i) => {
+      this.objects.slice(i + 1).forEach((obj2) => {
+        getBodyToBodyIntersections(obj1, obj2);
+        getBodyToBodyIntersections(obj2, obj1);
+      });
     });
   };
 
