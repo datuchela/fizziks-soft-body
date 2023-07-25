@@ -1,50 +1,24 @@
 import { EngineState } from "./EngineState";
-import { Spring } from "./objects/Spring";
-import { Vector } from "./Vector";
+import type { EngineConfig } from "./types";
+import type { SoftBodyObject } from "./objects/SoftBodyObject";
 
-import {
-  MouseState,
-  attachMouseDownListener,
-  attachMouseMoveListener,
-  attachMouseUpListener,
-  handleMouseControls,
-} from "./controllers";
-
-import { generateSoftBody } from "./helpers/generateSoftBody";
-import { softBodyShape2, square } from "./softBodyShapes";
-
-const TARGET_FPS = 60;
-
-export const init = (canvas: HTMLCanvasElement) => {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  const engineState = new EngineState(canvas.width, canvas.height);
-
-  const softBody = generateSoftBody(square);
-
-  // add inside bonds
-  softBody.springs.push(
-    new Spring({ particles: [softBody.particles[0], softBody.particles[2]] })
-  );
-  softBody.springs.push(
-    new Spring({ particles: [softBody.particles[1], softBody.particles[3]] })
-  );
-
-  const softBody2 = generateSoftBody(softBodyShape2);
-
-  engineState.addObject(softBody);
-  engineState.addObject(softBody2);
-
-  const mouseState: MouseState = {
-    isMouseDown: false,
-    position: new Vector(0, 0),
-    closestParticle: null,
+const kernAddObject =
+  (engineState: EngineState, onAddObject?: (object: SoftBodyObject) => void) =>
+  (object: SoftBodyObject) => {
+    engineState.addObject(object);
+    onAddObject && onAddObject(object);
   };
 
-  attachMouseDownListener(canvas, mouseState, softBody);
-  attachMouseUpListener(mouseState);
-  attachMouseMoveListener(canvas, mouseState);
+const kernObjects = (engineState: EngineState) => engineState.objects;
+
+export interface EngineInitProps {
+  ctx: CanvasRenderingContext2D;
+  engineConfig: EngineConfig;
+  onAddObject?: (object: SoftBodyObject) => void;
+}
+
+export const init = ({ ctx, engineConfig, onAddObject }: EngineInitProps) => {
+  const engineState = new EngineState(engineConfig);
 
   let oldTimeStamp = 0;
   let dt: number;
@@ -52,35 +26,33 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const mainLoop = (timeStamp: number) => {
     dt = (timeStamp - oldTimeStamp) / 1000;
-
-    dt = Math.min(1 / TARGET_FPS, dt);
-    dt = Math.max(1 / TARGET_FPS, dt);
-
     oldTimeStamp = timeStamp;
 
-    // FPS
+    const reciprocalFps = 1 / engineConfig.fps;
+    dt = Math.min(reciprocalFps, dt);
+    dt = Math.max(reciprocalFps, dt);
+
     fps = Math.round(1 / dt);
     ctx.font = "25px Arial";
     ctx.fillStyle = "white";
-    //
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, engineConfig.canvas.width, engineConfig.canvas.height);
 
     ctx.fillText("FPS: " + fps, 10, 30);
 
-    handleMouseControls(mouseState);
-
     engineState.resetForces();
-
     engineState.resetCollisions();
     engineState.detectCollisions();
-
     engineState.updateObjects(dt);
-
     engineState.drawObjects(ctx);
 
     requestAnimationFrame(mainLoop);
   };
 
   requestAnimationFrame(mainLoop);
+
+  return {
+    addObject: kernAddObject(engineState, onAddObject),
+    objects: kernObjects(engineState),
+  };
 };
