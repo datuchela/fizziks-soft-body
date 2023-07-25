@@ -45,16 +45,12 @@ export class EngineState {
   };
 
   detectCollisions = () => {
-    let obj1: SoftBodyObject;
-    let obj2: SoftBodyObject;
-    for (let i = 0; i < this.objects.length; ++i) {
-      obj1 = this.objects[i];
-      for (let j = i + 1; j < this.objects.length; ++j) {
-        obj2 = this.objects[j];
+    this.objects.forEach((obj1, i) => {
+      this.objects.slice(i + 1).forEach((obj2) => {
         getBodyToBodyIntersections(obj1, obj2);
         getBodyToBodyIntersections(obj2, obj1);
-      }
-    }
+      });
+    });
   };
 
   updateObjects = (dt: number) => {
