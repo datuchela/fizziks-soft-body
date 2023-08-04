@@ -7,7 +7,6 @@ export const engineConfig: EngineConfig = {
     height: 720,
   },
   particles: {
-    // if you want to remove the velocity constraint on particles, delete the next line.
     friction: 0.005,
     maxVelocity: 400,
   },
