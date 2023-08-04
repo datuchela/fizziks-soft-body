@@ -99,8 +99,9 @@ export class SoftBodyObject {
       !this.mouseState.currentParticle
     )
       return;
-    this.mouseState.currentParticle.v = new Vector(0, 0);
-    this.mouseState.currentParticle.p = this.mouseState.mousePosition;
+    this.mouseState.currentParticle.updateWithMouse(
+      this.mouseState.mousePosition
+    );
   };
 
   private onMouseDown = (e: MouseEvent) => {
