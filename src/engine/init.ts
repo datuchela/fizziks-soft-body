@@ -48,8 +48,6 @@ export const init = ({ canvas, ctx, engineConfig }: EngineInitProps) => {
     },
   });
 
-  console.log(engineState.maxVelocity);
-
   const softBody = generateSoftBody(square);
 
   // add inside bonds
