@@ -33,8 +33,6 @@ export class Particle {
     this.p = new Vector(x, y);
     this.v = v ?? new Vector(0, 0);
     this.f = f ?? new Vector(0, 0);
-    this.maxVelocity = Number.MAX_SAFE_INTEGER;
-    this.friction = 0;
   }
 
   get x() {
