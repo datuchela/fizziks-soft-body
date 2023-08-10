@@ -1,4 +1,4 @@
-import { EngineConfig } from "./types.ts";
+import { EngineConfig, RequiredEngineConfig } from "./types.ts";
 import { getBodyToBodyIntersections } from "./helpers/getBodyToBodyIntersections.ts";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
 
@@ -11,20 +11,27 @@ export interface EngineState {
   value: EngineStateValue;
   objects: SoftBodyObject[];
   config: EngineConfig;
+  maxVelocity: number;
+  friction: number;
 }
 
 export class EngineState {
-  constructor(engineConfig: EngineConfig) {
+  maxVelocity = Number.MAX_SAFE_INTEGER;
+  friction = 0;
+
+  constructor({ particles }: RequiredEngineConfig) {
     this.value = EngineStateValue.Running;
     this.objects = [];
-    this.config = engineConfig;
+
+    this.maxVelocity = particles.maxVelocity;
+    this.friction = particles.friction;
   }
 
   addObject = (object: SoftBodyObject) => {
     // add config values
     object.particles.forEach((particle) => {
-      particle.friction = this.config.particles?.friction;
-      particle.maxVelocity = this.config.particles?.maxVelocity;
+      particle.friction = this.friction;
+      particle.maxVelocity = this.maxVelocity;
     });
     this.objects.push(object);
   };

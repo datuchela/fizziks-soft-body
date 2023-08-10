@@ -12,8 +12,20 @@ import {
 
 import { generateSoftBody } from "./helpers/generateSoftBody";
 import { softBodyShape2, square } from "./softBodyShapes";
-import { EngineConfig } from "./types";
+import { EngineConfig, RequiredEngineConfig } from "./types";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
+
+const DEFAULT_ENGINE_CONFIG: RequiredEngineConfig = {
+  fps: 60,
+  canvas: {
+    width: 1366,
+    height: 720,
+  },
+  particles: {
+    maxVelocity: Number.MAX_SAFE_INTEGER,
+    friction: 0,
+  },
+};
 
 export interface EngineInitProps {
   canvas: HTMLCanvasElement;
@@ -22,13 +34,21 @@ export interface EngineInitProps {
   onAddObject?: (object: SoftBodyObject) => void;
 }
 
-export const init = ({
-  canvas,
-  ctx,
-  engineConfig,
-  onAddObject,
-}: EngineInitProps) => {
-  const engineState = new EngineState(engineConfig);
+export const init = ({ canvas, ctx, engineConfig }: EngineInitProps) => {
+  const engineState = new EngineState({
+    ...DEFAULT_ENGINE_CONFIG,
+    ...engineConfig,
+    particles: {
+      maxVelocity:
+        engineConfig.particles?.maxVelocity ??
+        DEFAULT_ENGINE_CONFIG.particles.maxVelocity,
+      friction:
+        engineConfig.particles?.friction ??
+        DEFAULT_ENGINE_CONFIG.particles.friction,
+    },
+  });
+
+  console.log(engineState.maxVelocity);
 
   const softBody = generateSoftBody(square);
 

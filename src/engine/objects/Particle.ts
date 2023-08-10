@@ -11,8 +11,8 @@ export interface Particle {
   mass: number;
   radius: number;
   isColliding: boolean;
-  friction: number | undefined;
-  maxVelocity: number | undefined;
+  friction: number;
+  maxVelocity: number;
 }
 
 export interface ParticleConstructorProps {
@@ -33,6 +33,8 @@ export class Particle {
     this.p = new Vector(x, y);
     this.v = v ?? new Vector(0, 0);
     this.f = f ?? new Vector(0, 0);
+    this.maxVelocity = Number.MAX_SAFE_INTEGER;
+    this.friction = 0;
   }
 
   get x() {
@@ -64,15 +66,10 @@ export class Particle {
   update = (dt: number) => {
     this.v = Vector.add(this.v, Vector.scale(this.f, dt / this.mass));
 
-    // Velocity Constraint
-    if (this.maxVelocity) {
-      const constrainedVelocity = Math.min(this.v.length, this.maxVelocity);
-      this.v = Vector.scale(this.v.unit, constrainedVelocity);
-    }
+    const constrainedSpeed = Math.min(this.v.length, this.maxVelocity);
+    const frictionedSpeed = constrainedSpeed * (1 - this.friction);
 
-    if (this.friction) {
-      this.v = Vector.scale(this.v, 1 - this.friction);
-    }
+    this.v = Vector.scale(this.v.unit, frictionedSpeed);
 
     this.p = Vector.add(this.p, Vector.scale(this.v, dt));
   };

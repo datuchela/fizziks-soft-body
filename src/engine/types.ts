@@ -9,3 +9,7 @@ export interface EngineConfig {
     friction?: number;
   };
 }
+
+export type RequiredEngineConfig = Required<EngineConfig> & {
+  particles: Required<EngineConfig["particles"]>;
+};
