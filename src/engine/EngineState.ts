@@ -16,9 +16,6 @@ export interface EngineState {
 }
 
 export class EngineState {
-  maxVelocity = Number.MAX_SAFE_INTEGER;
-  friction = 0;
-
   constructor({ particles }: RequiredEngineConfig) {
     this.value = EngineStateValue.Running;
     this.objects = [];
