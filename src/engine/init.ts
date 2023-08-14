@@ -12,14 +12,41 @@ import {
 
 import { generateSoftBody } from "./helpers/generateSoftBody";
 import { softBodyShape2, square } from "./softBodyShapes";
+import { EngineConfig, RequiredEngineConfig } from "./types";
+import { SoftBodyObject } from "./objects/SoftBodyObject";
 
-const TARGET_FPS = 60;
+const DEFAULT_ENGINE_CONFIG: RequiredEngineConfig = {
+  fps: 60,
+  canvas: {
+    width: 1366,
+    height: 720,
+  },
+  particles: {
+    maxVelocity: Number.MAX_SAFE_INTEGER,
+    friction: 0,
+  },
+};
 
-export const init = (canvas: HTMLCanvasElement) => {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+export interface EngineInitProps {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  engineConfig: EngineConfig;
+  onAddObject?: (object: SoftBodyObject) => void;
+}
 
-  const engineState = new EngineState(canvas.width, canvas.height);
+export const init = ({ canvas, ctx, engineConfig }: EngineInitProps) => {
+  const engineState = new EngineState({
+    ...DEFAULT_ENGINE_CONFIG,
+    ...engineConfig,
+    particles: {
+      maxVelocity:
+        engineConfig.particles?.maxVelocity ??
+        DEFAULT_ENGINE_CONFIG.particles.maxVelocity,
+      friction:
+        engineConfig.particles?.friction ??
+        DEFAULT_ENGINE_CONFIG.particles.friction,
+    },
+  });
 
   const softBody = generateSoftBody(square);
 
@@ -52,11 +79,11 @@ export const init = (canvas: HTMLCanvasElement) => {
 
   const mainLoop = (timeStamp: number) => {
     dt = (timeStamp - oldTimeStamp) / 1000;
-
-    dt = Math.min(1 / TARGET_FPS, dt);
-    dt = Math.max(1 / TARGET_FPS, dt);
-
     oldTimeStamp = timeStamp;
+
+    const reciprocalFps = 1 / engineConfig.fps;
+    dt = Math.min(reciprocalFps, dt);
+    dt = Math.max(reciprocalFps, dt);
 
     // FPS
     fps = Math.round(1 / dt);

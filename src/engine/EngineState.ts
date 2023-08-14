@@ -1,7 +1,8 @@
+import { EngineConfig, RequiredEngineConfig } from "./types.ts";
 import { getBodyToBodyIntersections } from "./helpers/getBodyToBodyIntersections.ts";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
 
-enum EngineStateValue {
+export enum EngineStateValue {
   Paused,
   Running,
 }
@@ -9,24 +10,26 @@ enum EngineStateValue {
 export interface EngineState {
   value: EngineStateValue;
   objects: SoftBodyObject[];
-
-  canvasWidth: number;
-  canvasHeight: number;
+  config: EngineConfig;
+  maxVelocity: number;
+  friction: number;
 }
 
 export class EngineState {
-  constructor(
-    canvasWidth: number,
-    canvasHeight: number,
-    objects?: SoftBodyObject[]
-  ) {
+  constructor({ particles }: RequiredEngineConfig) {
     this.value = EngineStateValue.Running;
-    this.objects = objects ?? [];
-    this.canvasWidth = canvasWidth;
-    this.canvasHeight = canvasHeight;
+    this.objects = [];
+
+    this.maxVelocity = particles.maxVelocity;
+    this.friction = particles.friction;
   }
 
   addObject = (object: SoftBodyObject) => {
+    // add config values
+    object.particles.forEach((particle) => {
+      particle.friction = this.friction;
+      particle.maxVelocity = this.maxVelocity;
+    });
     this.objects.push(object);
   };
 

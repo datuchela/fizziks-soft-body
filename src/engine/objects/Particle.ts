@@ -11,6 +11,8 @@ export interface Particle {
   mass: number;
   radius: number;
   isColliding: boolean;
+  friction: number;
+  maxVelocity: number;
 }
 
 export interface ParticleConstructorProps {
@@ -56,6 +58,12 @@ export class Particle {
 
   update = (dt: number) => {
     this.v = Vector.add(this.v, Vector.scale(this.f, dt / this.mass));
+
+    const constrainedSpeed = Math.min(this.v.length, this.maxVelocity);
+    const frictionedSpeed = constrainedSpeed * (1 - this.friction);
+
+    this.v = Vector.scale(this.v.unit, frictionedSpeed);
+
     this.p = Vector.add(this.p, Vector.scale(this.v, dt));
   };
 }
