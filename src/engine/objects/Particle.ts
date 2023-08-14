@@ -56,11 +56,6 @@ export class Particle {
     ctx.fill();
   };
 
-  updateWithMouse = (mousePosition: Vector) => {
-    this.v = new Vector(0, 0);
-    this.p = mousePosition;
-  };
-
   update = (dt: number) => {
     this.v = Vector.add(this.v, Vector.scale(this.f, dt / this.mass));
 
