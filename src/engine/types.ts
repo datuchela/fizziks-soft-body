@@ -1,3 +1,9 @@
+export type DeepRequired<T> = T extends object
+  ? {
+      [K in keyof T]-?: DeepRequired<T[K]>;
+    }
+  : T;
+
 export interface EngineConfig {
   fps: number;
   canvas: {
@@ -10,6 +16,4 @@ export interface EngineConfig {
   };
 }
 
-export type RequiredEngineConfig = Required<EngineConfig> & {
-  particles: Required<EngineConfig["particles"]>;
-};
+export type RequiredEngineConfig = DeepRequired<EngineConfig>;
