@@ -17,7 +17,7 @@ import {
   handleMouseControls,
 } from "./controllers";
 
-const kernAddObject =
+const handleAddObject =
   (engineState: EngineState, onAddObject?: (object: SoftBodyObject) => void) =>
   (object: SoftBodyObject) => {
     engineState.addObject(object);
@@ -111,6 +111,6 @@ export const init = ({
   requestAnimationFrame(mainLoop);
 
   return {
-    addObject: kernAddObject(engineState, onAddObject),
+    addObject: handleAddObject(engineState, onAddObject),
   };
 };
