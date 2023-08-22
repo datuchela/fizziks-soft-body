@@ -40,6 +40,10 @@ export const init = ({
   const engineState = new EngineState({
     ...DEFAULT_ENGINE_CONFIG,
     ...engineConfig,
+    canvasSize: {
+      width: canvas.width,
+      height: canvas.height,
+    },
     particles: {
       maxVelocity:
         engineConfig.particles?.maxVelocity ??
