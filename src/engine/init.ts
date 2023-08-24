@@ -2,6 +2,13 @@ import { EngineState } from "./EngineState";
 import { Spring } from "./objects/Spring";
 import { Vector } from "./Vector";
 
+import { generateSoftBody } from "./helpers/generateSoftBody";
+import { square } from "./softBodyShapes";
+import { SoftBodyObject } from "./objects/SoftBodyObject";
+
+import { DEFAULT_ENGINE_CONFIG } from "./init.constants";
+import type { EngineConfig } from "./types";
+
 import {
   MouseState,
   attachMouseDownListener,
@@ -10,22 +17,12 @@ import {
   handleMouseControls,
 } from "./controllers";
 
-import { generateSoftBody } from "./helpers/generateSoftBody";
-import { softBodyShape2, square } from "./softBodyShapes";
-import { EngineConfig, RequiredEngineConfig } from "./types";
-import { SoftBodyObject } from "./objects/SoftBodyObject";
-
-const DEFAULT_ENGINE_CONFIG: RequiredEngineConfig = {
-  fps: 60,
-  canvas: {
-    width: 1366,
-    height: 720,
-  },
-  particles: {
-    maxVelocity: Number.MAX_SAFE_INTEGER,
-    friction: 0,
-  },
-};
+const handleAddObject =
+  (engineState: EngineState, onAddObject?: (object: SoftBodyObject) => void) =>
+  (object: SoftBodyObject) => {
+    engineState.addObject(object);
+    onAddObject && onAddObject(object);
+  };
 
 export interface EngineInitProps {
   canvas: HTMLCanvasElement;
@@ -34,10 +31,19 @@ export interface EngineInitProps {
   onAddObject?: (object: SoftBodyObject) => void;
 }
 
-export const init = ({ canvas, ctx, engineConfig }: EngineInitProps) => {
+export const init = ({
+  canvas,
+  ctx,
+  engineConfig,
+  onAddObject,
+}: EngineInitProps) => {
   const engineState = new EngineState({
     ...DEFAULT_ENGINE_CONFIG,
     ...engineConfig,
+    canvasSize: {
+      width: canvas.width,
+      height: canvas.height,
+    },
     particles: {
       maxVelocity:
         engineConfig.particles?.maxVelocity ??
@@ -58,10 +64,7 @@ export const init = ({ canvas, ctx, engineConfig }: EngineInitProps) => {
     new Spring({ particles: [softBody.particles[1], softBody.particles[3]] })
   );
 
-  const softBody2 = generateSoftBody(softBodyShape2);
-
   engineState.addObject(softBody);
-  engineState.addObject(softBody2);
 
   const mouseState: MouseState = {
     isMouseDown: false,
@@ -110,4 +113,8 @@ export const init = ({ canvas, ctx, engineConfig }: EngineInitProps) => {
   };
 
   requestAnimationFrame(mainLoop);
+
+  return {
+    addObject: handleAddObject(engineState, onAddObject),
+  };
 };

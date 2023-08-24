@@ -1,6 +1,8 @@
 import { init } from "./engine/init";
 import { engineConfig } from "./engine.config";
 import "./style.css";
+import { generateSoftBody } from "./engine/helpers/generateSoftBody";
+import { softBodyShape2 } from "./engine/softBodyShapes";
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -12,4 +14,8 @@ canvas.height = CANVAS_HEIGHT;
 const ctx = canvas.getContext("2d");
 if (!ctx) throw new Error("Couldn't get context of a canvas");
 
-init({ canvas, ctx, engineConfig });
+const { addObject } = init({ canvas, ctx, engineConfig });
+
+const softBody2 = generateSoftBody(softBodyShape2);
+
+addObject(softBody2);

@@ -6,7 +6,7 @@ export type DeepRequired<T> = T extends object
 
 export interface EngineConfig {
   fps: number;
-  canvas: {
+  canvasSize?: {
     width: number;
     height: number;
   };
