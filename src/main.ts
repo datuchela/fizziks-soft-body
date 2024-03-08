@@ -6,7 +6,7 @@ import type { SoftBodyObject } from "./engine/objects/SoftBodyObject";
 import "./style.css";
 
 const handleAddObject = (object: SoftBodyObject) => {
-  // console.log("New Object has been added", object);
+    console.log("New Object has been added", object);
 };
 
 const initObjectListButtons = (
