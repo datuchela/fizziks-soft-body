@@ -48,7 +48,7 @@ const initObjectListButtons = (
   aside?.appendChild(ul);
 };
 
-const main = () => {
+function main() {
   const canvas = document.getElementById("physics-canvas") as HTMLCanvasElement;
 
   canvas.width = engineConfig.canvas.width;
