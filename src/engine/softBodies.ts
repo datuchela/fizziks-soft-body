@@ -15,7 +15,6 @@ export function generateTestSoftBodies() {
   );
 
   const softBody2 = generateSoftBody(softBodyShape2);
-  const softBody3 = generateSoftBody(softBodyShape2);
 
-  return [softBody1, softBody2, softBody3];
+  return [softBody1, softBody2];
 }

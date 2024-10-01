@@ -6,7 +6,7 @@ import type { SoftBodyObject } from "./engine/objects/SoftBodyObject";
 import "./style.css";
 
 const handleAddObject = (object: SoftBodyObject) => {
-    console.log("New Object has been added", object);
+  console.log("New Object has been added", object);
 };
 
 const initObjectListButtons = (
@@ -63,13 +63,12 @@ function main() {
     onAddObject: handleAddObject,
   });
 
-  const [softBody1, softBody2, softBody3] = generateTestSoftBodies();
+  const [softBody1, softBody2] = generateTestSoftBodies();
 
   softBody1.attachMouseControls(canvas);
 
   addObject(softBody1);
   addObject(softBody2);
-  addObject(softBody3);
 
   initObjectListButtons(objects, canvas);
 };
