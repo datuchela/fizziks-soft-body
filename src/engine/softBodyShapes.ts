@@ -1,20 +1,31 @@
 export type Shape = {
-  x: number;
-  y: number;
-  mass: number;
-  additionalBonds?: number[];
-}[];
+  particles: {
+    id: string;
+    x: number;
+    y: number;
+    mass?: number;
+  }[];
+  springs: {
+    p1: string;
+    p2: string;
+  }[];
+};
 
-export const square: Shape = [
-  { x: 100, y: 100, mass: 10 },
-  { x: 150, y: 100, mass: 10 },
-  { x: 150, y: 150, mass: 10 },
-  { x: 100, y: 150, mass: 10 },
-];
+export const square: Shape = {
+  particles: [
+    { id: "1", x: 443, y: 193 },
+    { id: "2", x: 478, y: 193 },
+    { id: "3", x: 479, y: 222 },
+    { id: "4", x: 444, y: 223 }
+  ],
+  springs:[
+    { p1: "1", p2: "2" },
+    { p1: "2", p2: "3" },
+    { p1: "3", p2: "4" },
+    { p1: "4", p2: "1" }
+  ]
+};
 
-export const softBodyShape2: Shape = [
-  { x: 400, y: 400, mass: 10 },
-  { x: 500, y: 400, mass: 10 },
-  { x: 450, y: 300, mass: 10 },
-  { x: 500, y: 250, mass: 10 },
-];
+/*
+ {"particles":[{"id":"1","x":376,"y":171},{"id":"2","x":609,"y":178},{"id":"3","x":626,"y":287},{"id":"4","x":530,"y":345},{"id":"5","x":368,"y":347},{"id":"6","x":323,"y":294},{"id":"7","x":297,"y":193}],"springs":[{"p1":"1","p2":"2"},{"p1":"2","p2":"3"},{"p1":"3","p2":"4"},{"p1":"4","p2":"5"},{"p1":"5","p2":"6"},{"p1":"6","p2":"7"},{"p1":"7","p2":"1"},{"p1":"3","p2":"1"},{"p1":"6","p2":"2"},{"p1":"4","p2":"1"},{"p1":"5","p2":"2"},{"p1":"4","p2":"7"}]}
+ */

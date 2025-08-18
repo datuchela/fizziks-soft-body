@@ -118,7 +118,7 @@ export type MouseState = {
 export const attachMouseDownListener = (
   canvas: HTMLCanvasElement,
   mouseState: MouseState,
-  softBody: SoftBodyObject
+  softBodies: SoftBodyObject[]
 ) => {
   canvas.addEventListener("mousedown", (e) => {
     mouseState.isMouseDown = true;
@@ -131,15 +131,18 @@ export const attachMouseDownListener = (
 
     let closestDistance: number | undefined;
 
-    for (let i = 0; i < softBody.particles.length; ++i) {
-      const currentParticle = softBody.particles[i];
-      const currDistance = Vector.subtract(
-        mouseState.position,
-        currentParticle.p
-      ).length;
-      if (closestDistance === undefined || currDistance < closestDistance) {
-        mouseState.closestParticle = softBody.particles[i];
-        closestDistance = currDistance;
+    for (let j = 0; j < softBodies.length; ++j) {
+      const softBody = softBodies[j];
+      for (let i = 0; i < softBody.particles.length; ++i) {
+        const currentParticle = softBody.particles[i];
+        const currDistance = Vector.subtract(
+          mouseState.position,
+          currentParticle.p
+        ).length;
+        if (closestDistance === undefined || currDistance < closestDistance) {
+          mouseState.closestParticle = softBody.particles[i];
+          closestDistance = currDistance;
+        }
       }
     }
   });

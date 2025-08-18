@@ -4,6 +4,7 @@ const COLLIDING_COLOR = "red";
 const NOT_COLLIDING_COLOR = "yellow";
 
 export interface Particle {
+  id: string;
   name: string | undefined;
   p: Vector;
   v: Vector;
@@ -16,6 +17,7 @@ export interface Particle {
 }
 
 export interface ParticleConstructorProps {
+  id: string;
   name?: string;
   mass: number;
   radius?: number;
@@ -26,7 +28,8 @@ export interface ParticleConstructorProps {
 }
 
 export class Particle {
-  constructor({ name, x, y, v, f, mass, radius }: ParticleConstructorProps) {
+  constructor({ id, name, x, y, v, f, mass, radius }: ParticleConstructorProps) {
+    this.id = id;
     this.name = name;
     this.radius = radius ?? 4;
     this.mass = mass;

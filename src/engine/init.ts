@@ -1,9 +1,7 @@
 import { EngineState } from "./EngineState";
-import { Spring } from "./objects/Spring";
 import { Vector } from "./Vector";
 
-import { generateSoftBody } from "./helpers/generateSoftBody";
-import { square } from "./softBodyShapes";
+import { generateSoftBody, parseRawJSONSoftBody } from "./helpers/generateSoftBody";
 import { SoftBodyObject } from "./objects/SoftBodyObject";
 
 import { DEFAULT_ENGINE_CONFIG } from "./init.constants";
@@ -54,15 +52,10 @@ export const init = ({
     },
   });
 
-  const softBody = generateSoftBody(square);
+  const rawShape = `{"particles":[{"id":"11","x":475,"y":285},{"id":"12","x":519,"y":263},{"id":"13","x":552,"y":289},{"id":"14","x":552,"y":325},{"id":"15","x":514,"y":344},{"id":"16","x":476,"y":330}],"springs":[{"p1":"12","p2":"13"},{"p1":"13","p2":"14"},{"p1":"14","p2":"15"},{"p1":"15","p2":"16"},{"p1":"16","p2":"11"},{"p1":"11","p2":"12"},{"p1":"15","p2":"12"},{"p1":"15","p2":"13"},{"p1":"15","p2":"11"},{"p1":"16","p2":"14"},{"p1":"16","p2":"13"},{"p1":"16","p2":"12"},{"p1":"11","p2":"13"},{"p1":"11","p2":"14"},{"p1":"12","p2":"14"}]}`
 
-  // add inside bonds
-  softBody.springs.push(
-    new Spring({ particles: [softBody.particles[0], softBody.particles[2]] })
-  );
-  softBody.springs.push(
-    new Spring({ particles: [softBody.particles[1], softBody.particles[3]] })
-  );
+  const shape = parseRawJSONSoftBody(rawShape);
+  const softBody = generateSoftBody(shape);
 
   engineState.addObject(softBody);
 
@@ -72,7 +65,7 @@ export const init = ({
     closestParticle: null,
   };
 
-  attachMouseDownListener(canvas, mouseState, softBody);
+  attachMouseDownListener(canvas, mouseState, engineState.objects);
   attachMouseUpListener(mouseState);
   attachMouseMoveListener(canvas, mouseState);
 

@@ -10,12 +10,13 @@ export interface SoftBodyObject {
 
 export interface PhysicsObjectConstructorProps {
   particles: Particle[];
+  springs: Spring[];
 }
 
 export class SoftBodyObject {
-  constructor({ particles }: PhysicsObjectConstructorProps) {
+  constructor({ particles, springs }: PhysicsObjectConstructorProps) {
     this.particles = particles;
-    this.springs = SoftBodyObject.generateBonds(particles);
+    this.springs = springs;
   }
 
   get boundingRect() {
@@ -91,14 +92,6 @@ export class SoftBodyObject {
       const nextIndex = index !== this.particles.length - 1 ? index + 1 : 0;
       const nextParticle = this.particles[nextIndex];
       return [particle.p, nextParticle.p];
-    });
-  };
-
-  static generateBonds = (particles: Particle[]): Spring[] => {
-    return particles.map((particle, index) => {
-      const nextIndex = index !== particles.length - 1 ? index + 1 : 0;
-      const nextParticle = particles[nextIndex];
-      return new Spring({ particles: [particle, nextParticle] });
     });
   };
 }

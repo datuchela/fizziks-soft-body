@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fizziks 2.0</title>
-  </head>
-  <body>
-    <h1>Interactive Physics Engine</h1>
-    <div>
-      <p>Use your mouse to drag the body across canvas</p>
-    </div>
-    <button class="canvas-button">
-      <canvas id="physics-canvas"></canvas>
-    </button>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fizziks 2.0</title>
+</head>
+
+<body>
+  <h1>Interactive Physics Engine</h1>
+  <div>
+    <p>Use your mouse to drag the body across canvas</p>
+  </div>
+  <div class="shape-input-wrapper">
+    <label for="shape-input">New object shape</label>
+    <textarea id="shape-input" placeholder="Paste your shape JSON string here"></textarea>
+    <button id="shape-add">Add object</button>
+  </div>
+  <button class="canvas-button">
+    <canvas id="physics-canvas"></canvas>
+  </button>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>
