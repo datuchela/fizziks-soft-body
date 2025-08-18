@@ -11,16 +11,20 @@
 <body>
   <h1>Interactive Physics Engine</h1>
   <div>
-    <p>Use your mouse to drag the body across canvas</p>
+    <p>You can go to <a href="https://editor.demo.datu.ch" target="_blank">https://editor.demo.datu.ch</a> and create
+      a
+      soft body shape, which you can import here afterwards.</p>
   </div>
-  <div class="shape-input-wrapper">
-    <label for="shape-input">New object shape</label>
-    <textarea id="shape-input" placeholder="Paste your shape JSON string here"></textarea>
-    <button id="shape-add">Add object</button>
+  <div class="wrapper">
+    <div class="shape-input-wrapper">
+      <label for="shape-input">Import soft body shape</label>
+      <textarea id="shape-input" placeholder="Paste your shape JSON string here"></textarea>
+      <button id="shape-add">Add object</button>
+    </div>
+    <button class="canvas-button">
+      <canvas id="physics-canvas" width="800" height="600"></canvas>
+    </button>
   </div>
-  <button class="canvas-button">
-    <canvas id="physics-canvas"></canvas>
-  </button>
   <script type="module" src="/src/main.ts"></script>
 </body>
 
