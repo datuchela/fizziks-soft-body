@@ -28,8 +28,6 @@ export class Spring {
   }: SpringConstructorProps) {
     this.particles = particles;
 
-    console.log(this.particles);
-
     this.restLength =
       restLength ??
       Vector.subtract(this.particles[0].p, this.particles[1].p).length;

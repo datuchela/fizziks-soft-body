@@ -1,10 +1,11 @@
-import { init } from "./engine/init";
 import { engineConfig } from "./engine.config";
-import "./style.css";
-import { generateSoftBody, parseRawJSONSoftBody } from "./engine/helpers/generateSoftBody";
+import { init } from "./engine/init";
+import { generateSoftBody, parseShapeJSON } from "./engine/helpers/generateSoftBody";
 
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
+import "./style.css";
+
+const CANVAS_WIDTH = 1366;
+const CANVAS_HEIGHT = 800;
 
 const shapeTextArea = document.getElementById("shape-input") as HTMLTextAreaElement | null;
 const shapeAddBtn = document.getElementById("shape-add") as HTMLButtonElement | null;
@@ -22,8 +23,12 @@ if (!ctx) throw new Error("Couldn't get context of a canvas");
 const { addObject } = init({ canvas, ctx, engineConfig });
 
 shapeAddBtn.addEventListener("click", () => {
-  const rawShape = shapeTextArea.value;
-  const parsedShape = parseRawJSONSoftBody(rawShape);
-  const softBody = generateSoftBody(parsedShape);
+  const jsonShape = shapeTextArea.value;
+  const shape = parseShapeJSON(jsonShape);
+  const softBody = generateSoftBody(shape);
   addObject(softBody);
 });
+
+const defaultShape = `{"particles":[{"id":"1","x":525,"y":274},{"id":"2","x":581,"y":273},{"id":"3","x":581,"y":328},{"id":"4","x":525,"y":328}],"springs":[{"p1":"1","p2":"2"},{"p1":"2","p2":"3"},{"p1":"3","p2":"4"},{"p1":"4","p2":"1"},{"p1":"4","p2":"2"},{"p1":"1","p2":"3"}]}`
+
+addObject(generateSoftBody(parseShapeJSON(defaultShape)));
